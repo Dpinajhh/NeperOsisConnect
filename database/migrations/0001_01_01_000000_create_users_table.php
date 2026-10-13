@@ -17,8 +17,21 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // === Osis Connect: data siswa ===
+            $table->string('nis', 20)->nullable()->unique();
+            $table->enum('role', ['admin', 'guru', 'siswa'])->default('siswa')->index();
+            $table->foreignId('kelas_id')->nullable()->constrained('kelas')->nullOnDelete();
+            $table->string('avatar')->nullable();
+            $table->text('bio')->nullable();
+            $table->string('telepon', 20)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_banned')->default(false);
+            $table->timestamp('last_login_at')->nullable();
+
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
