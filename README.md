@@ -91,7 +91,7 @@ Lalu buka http://localhost:8000.
 - [x] Fase 3 — Feed siswa langsung: posting (teks/foto/visibilitas), suka, komentar + balasan, hashtag, **Trending Topic**
 - [x] Fase 4 — Profil OSIS (visi, misi, kepengurusan) + kelola admin
 - [x] Fase 5 — Program kerja & Event (agenda, pendaftaran peserta, kelola)
-- [ ] Fase 6 — Polling (pilihan + hasil)
+- [x] Fase 6 — Polling (vote sekali per siswa, hasil persentase, kelola/tutup)
 - [ ] Fase 7 — Pengumuman & Berita (kelola, terbit, tandai baca)
 - [ ] Fase 8 — Notifikasi, laporan & moderasi
 - [ ] Fase 9 — Profil pengguna (edit, avatar) & dashboard admin

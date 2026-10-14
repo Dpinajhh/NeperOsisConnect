@@ -44,6 +44,7 @@
                     <a href="{{ route('profil-osis') }}" class="{{ $link }} {{ request()->routeIs('profil-osis') ? $aktif : '' }}">OSIS</a>
                     <a href="{{ route('program-kerja') }}" class="{{ $link }} {{ request()->routeIs('program-kerja*') ? $aktif : '' }}">Program</a>
                     <a href="{{ route('event') }}" class="{{ $link }} {{ request()->routeIs('event*') ? $aktif : '' }}">Event</a>
+                    <a href="{{ route('polling') }}" class="{{ $link }} {{ request()->routeIs('polling*') ? $aktif : '' }}">Polling</a>
                     <a href="{{ route('pengumuman.index') }}" class="{{ $link }} {{ request()->routeIs('pengumuman*') ? $aktif : '' }}">Pengumuman</a>
                     <a href="{{ route('berita.index') }}" class="{{ $link }} {{ request()->routeIs('berita*') ? $aktif : '' }}">Berita</a>
                     @if(auth()->user()->isPengelola())

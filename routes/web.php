@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\PollingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilOsisController;
 use App\Http\Controllers\ProgramKerjaController;
@@ -35,6 +36,10 @@ Route::get('/program-kerja/{program}', [ProgramKerjaController::class, 'show'])-
 
 Route::get('/event', [EventController::class, 'index'])->name('event');
 Route::get('/event/{event}', [EventController::class, 'show'])->name('event.detail');
+
+// Polling — daftar & detail terbuka; memilih perlu login
+Route::get('/polling', [PollingController::class, 'index'])->name('polling');
+Route::get('/polling/{polling}', [PollingController::class, 'show'])->name('polling.detail');
 
 // ─── Tamu (belum login) ─────────────────────────
 Route::middleware('guest')->group(function (): void {
@@ -66,6 +71,9 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     // Program kerja & Event — pendaftaran peserta (perlu login)
     Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->name('event.daftar');
     Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->name('event.batal');
+
+    // Polling — memberi suara (perlu login)
+    Route::post('/polling/{polling}/suara', [PollingController::class, 'vote'])->name('polling.vote');
 
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
@@ -107,5 +115,12 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::post('/event', [EventController::class, 'store'])->name('event.store');
         Route::put('/event/{event}', [EventController::class, 'update'])->name('event.update');
         Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
+
+        // Polling
+        Route::get('/polling', [PollingController::class, 'kelola'])->name('polling.kelola');
+        Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
+        Route::put('/polling/{polling}', [PollingController::class, 'update'])->name('polling.update');
+        Route::delete('/polling/{polling}', [PollingController::class, 'destroy'])->name('polling.destroy');
+        Route::post('/polling/{polling}/tutup', [PollingController::class, 'tutup'])->name('polling.tutup');
     });
 });

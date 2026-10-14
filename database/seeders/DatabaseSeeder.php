@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ProfilOsisSeeder::class,
             ProgramKerjaSeeder::class,
             EventSeeder::class,
+            PollingSeeder::class,
             PengumumanSeeder::class,
             BeritaSeeder::class,
         ]);
