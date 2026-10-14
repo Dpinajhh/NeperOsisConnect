@@ -33,6 +33,9 @@
             $menu = [
                 ['nama' => 'Kelola Pengumuman', 'rute' => 'pengumuman.index', 'ikon' => '📢', 'keterangan' => 'Buat & atur pengumuman untuk sekolah/jurusan/kelas'],
                 ['nama' => 'Kelola Berita', 'rute' => 'berita.index', 'ikon' => '📰', 'keterangan' => 'Tulis berita kegiatan, draft, dan headline'],
+                ['nama' => 'Program Kerja', 'rute' => 'admin.program-kerja.kelola', 'ikon' => '📋', 'keterangan' => 'Tambah, ubah, dan hapus program kerja OSIS'],
+                ['nama' => 'Event & Kegiatan', 'rute' => 'admin.event.kelola', 'ikon' => '📅', 'keterangan' => 'Atur agenda kegiatan dan pantau peserta'],
+                ['nama' => 'Profil OSIS', 'rute' => 'admin.profil-osis.edit', 'ikon' => '🏫', 'keterangan' => 'Visi, misi, sambutan, dan kepengurusan'],
                 ['nama' => 'Moderasi Laporan', 'rute' => 'feed', 'ikon' => '⚠️', 'keterangan' => 'Tangani laporan post & komentar dari siswa'],
                 ['nama' => 'Kelola Pengguna', 'rute' => 'feed', 'ikon' => '🎒', 'keterangan' => 'Aktif/nonaktifkan akun & atur peran'],
                 ['nama' => 'Feed Siswa', 'rute' => 'feed', 'ikon' => '💬', 'keterangan' => 'Pantau aktivitas siswa'],

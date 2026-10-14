@@ -6,10 +6,12 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilOsisController;
+use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\TopikController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,13 @@ Route::get('/', [BerandaController::class, 'index'])->name('beranda');
 
 // Profil OSIS — terbuka untuk semua (termasuk tamu)
 Route::get('/osis', [ProfilOsisController::class, 'index'])->name('profil-osis');
+
+// Program kerja & Event — terbuka untuk semua (termasuk tamu)
+Route::get('/program-kerja', [ProgramKerjaController::class, 'index'])->name('program-kerja');
+Route::get('/program-kerja/{program}', [ProgramKerjaController::class, 'show'])->name('program-kerja.detail');
+
+Route::get('/event', [EventController::class, 'index'])->name('event');
+Route::get('/event/{event}', [EventController::class, 'show'])->name('event.detail');
 
 // ─── Tamu (belum login) ─────────────────────────
 Route::middleware('guest')->group(function (): void {
@@ -53,6 +62,11 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
 
     // ─── Feed sosial (gaya Instagram/TikTok) ──────────
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
+
+    // Program kerja & Event — pendaftaran peserta (perlu login)
+    Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->name('event.daftar');
+    Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->name('event.batal');
+
     Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
@@ -81,5 +95,17 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::put('/profil-osis', [ProfilOsisController::class, 'update'])->name('profil-osis.update');
         Route::post('/kepengurusan', [ProfilOsisController::class, 'simpanPengurus'])->name('kepengurusan.store');
         Route::delete('/kepengurusan/{pengurus}', [ProfilOsisController::class, 'hapusPengurus'])->name('kepengurusan.hapus');
+
+        // Program kerja
+        Route::get('/program-kerja', [ProgramKerjaController::class, 'kelola'])->name('program-kerja.kelola');
+        Route::post('/program-kerja', [ProgramKerjaController::class, 'store'])->name('program-kerja.store');
+        Route::put('/program-kerja/{program}', [ProgramKerjaController::class, 'update'])->name('program-kerja.update');
+        Route::delete('/program-kerja/{program}', [ProgramKerjaController::class, 'destroy'])->name('program-kerja.destroy');
+
+        // Event / kegiatan
+        Route::get('/event', [EventController::class, 'kelola'])->name('event.kelola');
+        Route::post('/event', [EventController::class, 'store'])->name('event.store');
+        Route::put('/event/{event}', [EventController::class, 'update'])->name('event.update');
+        Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
     });
 });

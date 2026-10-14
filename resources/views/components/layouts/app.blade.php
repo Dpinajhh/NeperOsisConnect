@@ -34,7 +34,7 @@
 
             {{-- Menu tengah (desktop) --}}
             @auth
-                <nav class="hidden items-center gap-1 md:flex">
+                <nav class="hidden flex-wrap items-center gap-1 md:flex">
                     @php
                         $link = 'rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-brand-600 dark:text-slate-300 dark:hover:bg-slate-700';
                         $aktif = 'bg-brand-50 text-brand-700 dark:bg-slate-700 dark:text-brand-300';
@@ -42,6 +42,8 @@
                     <a href="{{ route('dashboard') }}" class="{{ $link }} {{ request()->routeIs('dashboard') ? $aktif : '' }}">Beranda</a>
                     <a href="{{ route('feed') }}" class="{{ $link }} {{ request()->routeIs('feed*') ? $aktif : '' }}">Feed</a>
                     <a href="{{ route('profil-osis') }}" class="{{ $link }} {{ request()->routeIs('profil-osis') ? $aktif : '' }}">OSIS</a>
+                    <a href="{{ route('program-kerja') }}" class="{{ $link }} {{ request()->routeIs('program-kerja*') ? $aktif : '' }}">Program</a>
+                    <a href="{{ route('event') }}" class="{{ $link }} {{ request()->routeIs('event*') ? $aktif : '' }}">Event</a>
                     <a href="{{ route('pengumuman.index') }}" class="{{ $link }} {{ request()->routeIs('pengumuman*') ? $aktif : '' }}">Pengumuman</a>
                     <a href="{{ route('berita.index') }}" class="{{ $link }} {{ request()->routeIs('berita*') ? $aktif : '' }}">Berita</a>
                     @if(auth()->user()->isPengelola())
@@ -96,7 +98,9 @@
                         </div>
                     </div>
                 @else
-                    <a href="{{ route('profil-osis') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 sm:block dark:text-slate-400">Profil OSIS</a>
+                    <a href="{{ route('profil-osis') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Profil OSIS</a>
+                    <a href="{{ route('program-kerja') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Program Kerja</a>
+                    <a href="{{ route('event') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Event</a>
                     <a href="{{ route('login') }}" class="btn-ghost text-xs sm:text-sm">Masuk</a>
                     <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm">Daftar</a>
                 @endauth

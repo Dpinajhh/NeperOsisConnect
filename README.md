@@ -89,8 +89,8 @@ Lalu buka http://localhost:8000.
 - [x] Fase 1 — Skema database (14 tabel), model, factory, seeder
 - [x] Fase 2 — Routing lengkap, autentikasi, dashboard, landing page, identitas SMK Negeri 1 Cirebon
 - [x] Fase 3 — Feed siswa langsung: posting (teks/foto/visibilitas), suka, komentar + balasan, hashtag, **Trending Topic**
-- [ ] Fase 4 — Profil OSIS (visi, misi, kepengurusan)
-- [ ] Fase 5 — Program kerja & Event
+- [x] Fase 4 — Profil OSIS (visi, misi, kepengurusan) + kelola admin
+- [x] Fase 5 — Program kerja & Event (agenda, pendaftaran peserta, kelola)
 - [ ] Fase 6 — Polling (pilihan + hasil)
 - [ ] Fase 7 — Pengumuman & Berita (kelola, terbit, tandai baca)
 - [ ] Fase 8 — Notifikasi, laporan & moderasi
