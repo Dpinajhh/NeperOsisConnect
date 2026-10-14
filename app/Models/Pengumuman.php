@@ -74,7 +74,7 @@ class Pengumuman extends Model
      * Pengumuman yang relevan untuk seorang siswa.
      * 'semua' selalu tampil; 'kelas'/'jurusan' harus cocok.
      */
-    public function scopeUntuk(?User $user, Builder $query): void
+    public function scopeUntuk(Builder $query, ?User $user): void
     {
         $query->where(function (Builder $q) use ($user) {
             // Selalu tampil: pengumuman untuk seluruh sekolah

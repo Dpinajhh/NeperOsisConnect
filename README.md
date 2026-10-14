@@ -1,58 +1,99 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    <strong>Osis Connect</strong> — Platform siswa <strong>SMK Negeri 1 Cirebon</strong>
 </p>
 
-## About Laravel
+<p align="center">
+    <em>Sampurasun, Wargi Neper!</em>
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tentang
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Osis Connect** adalah platform internal untuk siswa <a href="https://www.smkn1-cirebon.sch.id" target="_blank">SMK Negeri 1 Cirebon</a>
+(SMK tertua di Kota Cirebon, berdiri sejak 1955, dulunya STM Negeri Cirebon).
 
-## Learning Laravel
+Siswa dapat berbagi cerita, membaca pengumuman resmi dari pengurus OSIS & guru,
+serta mengikuti berita kegiatan sekolah — dalam satu ruang digital yang aman dan ter-moderasi.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Informasi Sekolah
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+| | |
+|---|---|
+| **Nama** | SMK Negeri 1 Cirebon |
+| **Julukan siswa** | Neper |
+| **Alamat** | Jl. Perjuangan–Sunyaragi, Karyamulya, Kesambi, Kota Cirebon, Jawa Barat |
+| **Website resmi** | https://www.smkn1-cirebon.sch.id |
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+## Fitur utama
 
-## Agentic Development
+| Modul | Keterangan |
+|---|---|
+| **Feed siswa** | Post cerita/kegiatan dengan visibilitas: seluruh sekolah, satu jurusan, atau satu kelas. Bisa suka & komentar (termasuk balasan). |
+| **Pengumuman** | Pengumuman resmi dari pengelola, bertarget sekolah/jurusan/kelas, bisa disematkan (pin), dan ditandai sudah dibaca. |
+| **Berita** | Artikel kegiatan sekolah: draft/publish, headline, kategori, penghitung views. |
+| **Notifikasi** | Notifikasi otomatis saat ada suka, komentar, atau pengumuman baru. |
+| **Moderasi** | Siswa bisa melapor post/komentar; admin & guru menanganinya (open → diproses → selesai/ditolak). |
+| **Multi peran** | `admin`, `guru` (pengelola), dan `siswa`. Menu kelola hanya untuk admin & guru. |
+| **Keamanan** | Middleware `role` (batas peran) & `aktif` (tolak akun nonaktif/diblokir), throttle percobaan login. |
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Teknologi
 
-```bash
-composer require laravel/boost --dev
+- **Laravel 13** (PHP 8.3+) · SQLite (dev)
+- **Tailwind CSS v4** via Vite, **Alpine.js** (dark mode berbasis class)
+- Eloquent + migration + seeder + factory lengkap
 
-php artisan boost:install
+## Struktur
+
+```
+app/
+  Http/Controllers/      Beranda, Dashboard, Halaman, Auth/*
+  Http/Middleware/       RoleMiddleware, EnsureUserIsActive
+  Http/Requests/Auth/    LoginRequest (login via email atau NIS)
+  Models/                User, Kelas, Jurusan, Post, Komentar, Kategori,
+                         Pengumuman, Berita, Notifikasi, Laporan
+database/
+  migrations/            14 tabel: users, kelas, jurusan, posts, post_suka,
+                         komentar, kategori, pengumuman, pengumuman_baca,
+                         berita, laporan, notifikasi, cache, jobs
+  seeders/               Jurusan → Kelas → Kategori → User → Post → Pengumuman → Berita
+resources/views/         layouts (app, auth), auth/*, beranda, dashboard, halaman/*
+routes/web.php           publik → guest → auth → admin (prefix /admin)
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Menjalankan
 
-## Contributing
+```bash
+composer install
+copy .env.example .env      # (Windows) — sesuaikan DB_CONNECTION=sqlite
+php artisan key:generate
+php artisan migrate --seed
+npm install
+npm run build
+php artisan serve
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Lalu buka http://localhost:8000.
 
-## Code of Conduct
+## Akun uji (password: `password`)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| Peran | Email / NIS |
+|---|---|
+| Admin (pengelola) | `admin@osisconnect.test` |
+| Guru / Pembina OSIS | `guru@osisconnect.test` |
+| Siswa | `siswa@osisconnect.test` atau NIS `SW001` |
 
-## Security Vulnerabilities
+## Status pengembangan
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- [x] Fase 0 — Setup Laravel 13 + Tailwind v4
+- [x] Fase 1 — Skema database (14 tabel), model, factory, seeder
+- [x] Fase 2 — Routing lengkap, autentikasi, dashboard, landing page, identitas SMK Negeri 1 Cirebon
+- [ ] Fase 3 — Feed post (buat, suka, komentar, balasan)
+- [ ] Fase 4 — Pengumuman & berita (kelola, terbit, tandai baca)
+- [ ] Fase 5 — Notifikasi, laporan & moderasi
+- [ ] Fase 6 — Profil pengguna
+- [ ] Fase 7 — Dashboard admin & kelola pengguna
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Dibuat oleh pengurus OSIS SMK Negeri 1 Cirebon.
