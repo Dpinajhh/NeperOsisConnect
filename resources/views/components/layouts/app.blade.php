@@ -165,5 +165,7 @@
         };
     }
 </script>
+
+@stack('skrip')
 </body>
 </html>

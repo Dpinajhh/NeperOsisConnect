@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Komentar;
 use App\Models\Post;
+use App\Models\Topik;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -61,6 +62,15 @@ class PostSeeder extends Seeder
                         ]),
                     ]);
                 }
+            }
+
+            // ── Hashtag ───────────────────────────────────
+            $topik = Topik::inRandomOrder()->limit(mt_rand(1, 3))->get();
+            if ($topik->isNotEmpty()) {
+                $tag = $topik->map(fn ($t) => '#'.$t->nama)->join(' ');
+                $post->update(['konten' => $post->konten."\n\n".$tag]);
+                $post->topik()->sync($topik->pluck('id'));
+                Topik::whereIn('id', $topik->pluck('id'))->increment('jumlah_post');
             }
 
             // ── Sinkronkan counter ────────────────────────

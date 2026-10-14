@@ -6,7 +6,10 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BerandaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\TopikController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,8 +47,19 @@ Route::post('/keluar', [LoginController::class, 'destroy'])
 Route::middleware(['auth', 'aktif'])->group(function (): void {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // ─── Feed sosial (gaya Instagram/TikTok) ──────────
+    Route::get('/feed', [FeedController::class, 'index'])->name('feed');
+    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
+    Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->name('posts.suka');
+    Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->name('posts.komentar');
+    Route::delete('/posts/{post}/komentar/{komentar}', [PostController::class, 'hapusKomentar'])->name('posts.komentar.hapus');
+
+    // Topik / hashtag (Trending Topic)
+    Route::get('/topik/{topik:slug}', [TopikController::class, 'show'])->name('topik.show');
+
     // Halaman inti — fitur lengkap dibangun bertahap
-    Route::get('/feed', [HalamanController::class, 'feed'])->name('feed');
     Route::get('/pengumuman', [HalamanController::class, 'pengumuman'])->name('pengumuman.index');
     Route::get('/berita', [HalamanController::class, 'berita'])->name('berita.index');
     Route::get('/notifikasi', [HalamanController::class, 'notifikasi'])->name('notifikasi.index');

@@ -12,16 +12,6 @@ use Illuminate\View\View;
  */
 class HalamanController extends Controller
 {
-    /** Feed: Fase berikutnya */
-    public function feed(): View
-    {
-        return view('halaman.umum', [
-            'ikon' => '💬',
-            'judul' => 'Feed Siswa',
-            'deskripsi' => 'Tempat berbagi cerita, kegiatan, dan pendapat antarwarga sekolah. Segera hadir — kamu akan bisa posting, menyukai, dan mengomentari.',
-        ]);
-    }
-
     /** Pengumuman: Fase berikutnya */
     public function pengumuman(): View
     {
