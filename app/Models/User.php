@@ -72,6 +72,14 @@ class User extends Authenticatable
         return $this->hasMany(Notifikasi::class, 'user_id');
     }
 
+    /** Pengumuman yang sudah dibaca user ini */
+    public function pembaca(): BelongsToMany
+    {
+        return $this->belongsToMany(Pengumuman::class, 'pengumuman_baca', 'user_id', 'pengumuman_id')
+            ->withPivot('dibaca_at')
+            ->withTimestamps();
+    }
+
     public function laporanDibuat(): HasMany
     {
         return $this->hasMany(Laporan::class, 'pelapor_id');

@@ -39,6 +39,12 @@ class Berita extends Model
         return $this->belongsTo(Kategori::class, 'kategori_id');
     }
 
+    /** Route model binding memakai slug. */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function scopeTerbit(Builder $query): void
     {
         $query->where('status', 'published')->where('published_at', '<=', now());

@@ -92,7 +92,7 @@ Lalu buka http://localhost:8000.
 - [x] Fase 4 — Profil OSIS (visi, misi, kepengurusan) + kelola admin
 - [x] Fase 5 — Program kerja & Event (agenda, pendaftaran peserta, kelola)
 - [x] Fase 6 — Polling (vote sekali per siswa, hasil persentase, kelola/tutup)
-- [ ] Fase 7 — Pengumuman & Berita (kelola, terbit, tandai baca)
+- [x] Fase 7 — Pengumuman & Berita (terbit, target, pin, tandai sudah baca, kelola)
 - [ ] Fase 8 — Notifikasi, laporan & moderasi
 - [ ] Fase 9 — Profil pengguna (edit, avatar) & dashboard admin
 

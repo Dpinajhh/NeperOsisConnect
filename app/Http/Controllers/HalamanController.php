@@ -13,26 +13,6 @@ use Illuminate\View\View;
 class HalamanController extends Controller
 {
     /** Pengumuman: Fase berikutnya */
-    public function pengumuman(): View
-    {
-        return view('halaman.umum', [
-            'ikon' => '📢',
-            'judul' => 'Pengumuman',
-            'deskripsi' => 'Informasi resmi dari pengurus OSIS dan guru — bisa untuk seluruh sekolah, satu jurusan, atau satu kelas.',
-        ]);
-    }
-
-    /** Berita: Fase berikutnya */
-    public function berita(): View
-    {
-        return view('halaman.umum', [
-            'ikon' => '📰',
-            'judul' => 'Berita Sekolah',
-            'deskripsi' => 'Kegiatan, prestasi, dan liputan kegiatan SMK Negeri 1 Cirebon. Segera hadir.',
-        ]);
-    }
-
-    /** Notifikasi: Fase berikutnya */
     public function notifikasi(): View
     {
         $jumlahBelumDibaca = auth()->user()->notifikasi()->belumDibaca()->count();

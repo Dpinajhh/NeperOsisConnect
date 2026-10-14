@@ -64,6 +64,12 @@ class Pengumuman extends Model
             ->withTimestamps();
     }
 
+    /** Route model binding memakai slug. */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     /** Hanya pengumuman yang sudah terbit */
     public function scopeTerbit(Builder $query): void
     {

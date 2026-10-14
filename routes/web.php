@@ -5,10 +5,12 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BerandaController;
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PollingController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProfilOsisController;
@@ -86,8 +88,11 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     Route::get('/topik/{topik:slug}', [TopikController::class, 'show'])->name('topik.show');
 
     // Halaman inti — fitur lengkap dibangun bertahap
-    Route::get('/pengumuman', [HalamanController::class, 'pengumuman'])->name('pengumuman.index');
-    Route::get('/berita', [HalamanController::class, 'berita'])->name('berita.index');
+    Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+    Route::get('/pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.detail');
+
+    Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+    Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.detail');
     Route::get('/notifikasi', [HalamanController::class, 'notifikasi'])->name('notifikasi.index');
 
     // Profil
@@ -103,6 +108,19 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::put('/profil-osis', [ProfilOsisController::class, 'update'])->name('profil-osis.update');
         Route::post('/kepengurusan', [ProfilOsisController::class, 'simpanPengurus'])->name('kepengurusan.store');
         Route::delete('/kepengurusan/{pengurus}', [ProfilOsisController::class, 'hapusPengurus'])->name('kepengurusan.hapus');
+
+        // Pengumuman
+        Route::get('/pengumuman', [PengumumanController::class, 'kelola'])->name('pengumuman.kelola');
+        Route::post('/pengumuman', [PengumumanController::class, 'store'])->name('pengumuman.store');
+        Route::put('/pengumuman/{pengumuman}', [PengumumanController::class, 'update'])->name('pengumuman.update');
+        Route::delete('/pengumuman/{pengumuman}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy');
+        Route::post('/pengumuman/{pengumuman}/sematkan', [PengumumanController::class, 'sematkan'])->name('pengumuman.sematkan');
+
+        // Berita
+        Route::get('/berita', [BeritaController::class, 'kelola'])->name('berita.kelola');
+        Route::post('/berita', [BeritaController::class, 'store'])->name('berita.store');
+        Route::put('/berita/{berita}', [BeritaController::class, 'update'])->name('berita.update');
+        Route::delete('/berita/{berita}', [BeritaController::class, 'destroy'])->name('berita.destroy');
 
         // Program kerja
         Route::get('/program-kerja', [ProgramKerjaController::class, 'kelola'])->name('program-kerja.kelola');
