@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             TopikSeeder::class,
             PostSeeder::class,
+            ProfilOsisSeeder::class,
             PengumumanSeeder::class,
             BeritaSeeder::class,
         ]);

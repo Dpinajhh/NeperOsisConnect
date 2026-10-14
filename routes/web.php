@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfilOsisController;
 use App\Http\Controllers\TopikController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,6 +23,9 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Publik ──────────────────────────────────────
 Route::get('/', [BerandaController::class, 'index'])->name('beranda');
+
+// Profil OSIS — terbuka untuk semua (termasuk tamu)
+Route::get('/osis', [ProfilOsisController::class, 'index'])->name('profil-osis');
 
 // ─── Tamu (belum login) ─────────────────────────
 Route::middleware('guest')->group(function (): void {
@@ -71,5 +75,11 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     // Panel pengelola — hanya admin & guru
     Route::middleware('role:admin,guru')->prefix('admin')->name('admin.')->group(function (): void {
         Route::get('/', [HalamanController::class, 'kelola'])->name('beranda');
+
+        // Profil OSIS & kepengurusan
+        Route::get('/profil-osis', [ProfilOsisController::class, 'edit'])->name('profil-osis.edit');
+        Route::put('/profil-osis', [ProfilOsisController::class, 'update'])->name('profil-osis.update');
+        Route::post('/kepengurusan', [ProfilOsisController::class, 'simpanPengurus'])->name('kepengurusan.store');
+        Route::delete('/kepengurusan/{pengurus}', [ProfilOsisController::class, 'hapusPengurus'])->name('kepengurusan.hapus');
     });
 });

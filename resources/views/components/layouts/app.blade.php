@@ -41,6 +41,7 @@
                     @endphp
                     <a href="{{ route('dashboard') }}" class="{{ $link }} {{ request()->routeIs('dashboard') ? $aktif : '' }}">Beranda</a>
                     <a href="{{ route('feed') }}" class="{{ $link }} {{ request()->routeIs('feed*') ? $aktif : '' }}">Feed</a>
+                    <a href="{{ route('profil-osis') }}" class="{{ $link }} {{ request()->routeIs('profil-osis') ? $aktif : '' }}">OSIS</a>
                     <a href="{{ route('pengumuman.index') }}" class="{{ $link }} {{ request()->routeIs('pengumuman*') ? $aktif : '' }}">Pengumuman</a>
                     <a href="{{ route('berita.index') }}" class="{{ $link }} {{ request()->routeIs('berita*') ? $aktif : '' }}">Berita</a>
                     @if(auth()->user()->isPengelola())
@@ -95,6 +96,7 @@
                         </div>
                     </div>
                 @else
+                    <a href="{{ route('profil-osis') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 sm:block dark:text-slate-400">Profil OSIS</a>
                     <a href="{{ route('login') }}" class="btn-ghost text-xs sm:text-sm">Masuk</a>
                     <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm">Daftar</a>
                 @endauth
