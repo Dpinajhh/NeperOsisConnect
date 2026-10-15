@@ -55,6 +55,23 @@
 
             {{-- Kanan --}}
             <div class="flex items-center gap-2">
+                @auth
+                    {{-- Pencarian --}}
+                    <form action="{{ route('cari') }}" method="GET" class="hidden md:block">
+                        <div class="relative">
+                            <svg class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                            <input type="search" name="q" value="{{ request('q') }}" placeholder="Cari...  (tekan /)"
+                                   class="input w-44 py-2 pl-9 focus:w-64 transition-all lg:w-56">
+                        </div>
+                    </form>
+
+                    {{-- Pencarian (mobile) --}}
+                    <a href="{{ route('cari') }}" title="Cari"
+                       class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 md:hidden dark:text-slate-400 dark:hover:bg-slate-700">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+                    </a>
+                @endauth
+
                 <button @click="tukarTema()" type="button" title="Ganti tema"
                         class="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-700">
                     <svg x-show="!dark" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.72 9.72 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"/></svg>

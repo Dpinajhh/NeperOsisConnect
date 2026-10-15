@@ -67,6 +67,9 @@ Route::post('/keluar', [LoginController::class, 'destroy'])
 Route::middleware(['auth', 'aktif'])->group(function (): void {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
+    // Pencarian global (postingan, berita, pengumuman, topik, siswa)
+    Route::get('/cari', \App\Http\Controllers\CariController::class)->name('cari');
+
     // ─── Feed sosial (gaya Instagram/TikTok) ──────────
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
