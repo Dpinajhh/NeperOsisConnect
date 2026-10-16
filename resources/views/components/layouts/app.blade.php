@@ -8,6 +8,14 @@
     <meta name="description" content="Osis Connect — platform siswa SMK Negeri 1 Cirebon untuk berbagi cerita, pengumuman, dan berita sekolah.">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    {{-- PWA: bisa dipasang di HP seperti aplikasi --}}
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="apple-touch-icon" href="{{ asset('icon.svg') }}">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Osis Connect">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
 
     <script>
