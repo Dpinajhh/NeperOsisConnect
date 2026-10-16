@@ -138,10 +138,25 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
 
         // Polling
-        Route::get('/polling', [PollingController::class, 'kelola'])->name('polling.kelola');
-        Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
+        Route::get('/polling', [PollingController::class, 'kelola'])->name('polling.kelola');        Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
         Route::put('/polling/{polling}', [PollingController::class, 'update'])->name('polling.update');
         Route::delete('/polling/{polling}', [PollingController::class, 'destroy'])->name('polling.destroy');
         Route::post('/polling/{polling}/tutup', [PollingController::class, 'tutup'])->name('polling.tutup');
+
+        // Moderasi laporan dari siswa
+        Route::get('/laporan', [\App\Http\Controllers\Admin\LaporanController::class, 'index'])->name('laporan.kelola');
+        Route::post('/laporan/{laporan}/perbarui', [\App\Http\Controllers\Admin\LaporanController::class, 'perbarui'])->name('laporan.perbarui');
+        Route::post('/laporan/{laporan}/hapus-konten', [\App\Http\Controllers\Admin\LaporanController::class, 'hapusKonten'])->name('laporan.hapus-konten');
+
+        // Kelola pengguna (peran, status aktif, blokir)
+        Route::get('/pengguna', [\App\Http\Controllers\Admin\PenggunaController::class, 'index'])->name('pengguna.kelola');
+        Route::post('/pengguna/{user}/peran', [\App\Http\Controllers\Admin\PenggunaController::class, 'ubahPeran'])->name('pengguna.peran');
+        Route::post('/pengguna/{user}/status', [\App\Http\Controllers\Admin\PenggunaController::class, 'statusAkun'])->name('pengguna.status');
+        Route::post('/pengguna/{user}/blokir', [\App\Http\Controllers\Admin\PenggunaController::class, 'blokir'])->name('pengguna.blokir');
     });
+});
+
+// ─── Pelaporan konten (semua pengguna) ──────────────────────
+Route::middleware(['auth', 'aktif'])->group(function (): void {
+    Route::post('/lapor', [\App\Http\Controllers\LaporanController::class, 'store'])->name('lapor.store');
 });

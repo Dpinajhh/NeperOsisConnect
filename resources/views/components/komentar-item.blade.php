@@ -21,6 +21,8 @@
             @endif
             @if (auth()->id() === $komentar->user_id || auth()->user()->isPengelola())
                 <button type="button" onclick="hapusKomentar({{ $postId }}, {{ $komentar->id }})" class="font-semibold hover:text-rose-500">Hapus</button>
+            @elseif (auth()->id() !== $komentar->user_id)
+                <x-lapor-button tipe="komentar" :id="$komentar->id" />
             @endif
         </div>
 
@@ -37,6 +39,8 @@
                             </div>
                             @if (auth()->id() === $balasan->user_id || auth()->user()->isPengelola())
                                 <button type="button" onclick="hapusKomentar({{ $postId }}, {{ $balasan->id }})" class="mt-1 pl-1 text-[11px] font-semibold text-slate-400 hover:text-rose-500">Hapus</button>
+                            @elseif (auth()->id() !== $balasan->user_id)
+                                <span class="ml-1 inline-flex align-middle"><x-lapor-button tipe="komentar" :id="$balasan->id" /></span>
                             @endif
                         </div>
                     </div>

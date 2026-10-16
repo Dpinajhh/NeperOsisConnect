@@ -98,6 +98,10 @@
                 Bagikan
             </button>
 
+            @if (auth()->id() !== $post->user_id)
+                <x-lapor-button tipe="post" :id="$post->id" />
+            @endif
+
             @if ($totalKomentar > 3 && $ringkas)
                 <a href="{{ route('posts.show', $post) }}" class="ml-auto text-[11px] font-semibold text-brand-600 hover:underline dark:text-brand-400">
                     Lihat semua {{ $totalKomentar }} komentar →
