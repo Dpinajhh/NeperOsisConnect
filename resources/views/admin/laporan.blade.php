@@ -8,12 +8,6 @@
         </div>
 
         <div class="flex flex-wrap gap-1.5">
-            @php
-                $tombol = fn ($id, $label, $n) => [
-                    'aktif' => 'bg-brand-600 text-white',
-                    'idle'  => 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
-                ];
-            @endphp
             @foreach ([
                 'semua' => 'Semua', 'open' => 'Terbuka', 'diproses' => 'Diproses',
                 'selesai' => 'Selesai', 'ditolak' => 'Ditolak',
@@ -43,7 +37,7 @@
     @else
         <div class="space-y-4">
             @foreach ($laporan as $lap)
-                @php($objek = $lap->laporanable)
+                @php $objek = $lap->laporanable; @endphp
                 <div class="card p-5">
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div class="flex items-center gap-3">
@@ -60,13 +54,13 @@
                             </div>
                         </div>
 
-                        @php
-                            $warna = ['open' => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
-                                      'diproses' => 'bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300',
-                                      'selesai' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
-                                      'ditolak' => 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300'];
-                        @endphp
-                        <span class="badge {{ $warna[$lap->status] }}">{{ ucfirst($lap->status) }}</span>
+                        <span class="badge {{ match ($lap->status) {
+                            'open' => 'bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300',
+                            'diproses' => 'bg-sky-100 text-sky-700 dark:bg-sky-900 dark:text-sky-300',
+                            'selesai' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300',
+                            'ditolak' => 'bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300',
+                            default => 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
+                        } }}">{{ ucfirst($lap->status) }}</span>
                     </div>
 
                     {{-- Alasan --}}
@@ -80,7 +74,7 @@
                         <p class="text-xs font-semibold uppercase tracking-wide text-rose-500">Konten yang dilaporkan</p>
 
                         @if ($objek)
-                            @php($penulis = $objek->user ?? null)
+                            @php $penulis = $objek->user ?? null; @endphp
                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                                 oleh <strong>{{ $penulis?->name ?? '(pengguna terhapus)' }}</strong>
                             </p>

@@ -138,7 +138,8 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('event.destroy');
 
         // Polling
-        Route::get('/polling', [PollingController::class, 'kelola'])->name('polling.kelola');        Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
+        Route::get('/polling', [PollingController::class, 'kelola'])->name('polling.kelola');
+        Route::post('/polling', [PollingController::class, 'store'])->name('polling.store');
         Route::put('/polling/{polling}', [PollingController::class, 'update'])->name('polling.update');
         Route::delete('/polling/{polling}', [PollingController::class, 'destroy'])->name('polling.destroy');
         Route::post('/polling/{polling}/tutup', [PollingController::class, 'tutup'])->name('polling.tutup');
