@@ -12,42 +12,41 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Peran, status, & verifikasi email tidak fillable (lihat App\Models\User),
+        // jadi ditetapkan eksplisit lewat forceFill.
+        $akun = function (string $email, array $data, string $role): User {
+            $user = User::updateOrCreate(['email' => $email], $data);
+
+            $user->forceFill([
+                'role' => $role,
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ])->save();
+
+            return $user;
+        };
+
         // ─── Akun uji utama ───────────────────────────────
-        User::updateOrCreate(
-            ['email' => 'admin@osisconnect.test'],
-            [
-                'name' => 'Ketua OSIS',
-                'nis' => 'ADM001',
-                'role' => 'admin',
-                'password' => 'password',   // otomatis di-hash oleh cast 'hashed'
-                'bio' => 'Pengelola platform Osis Connect.',
-                'email_verified_at' => now(),
-            ]
-        );
+        $akun('admin@osisconnect.test', [
+            'name' => 'Ketua OSIS',
+            'nis' => 'ADM001',
+            'password' => 'password',   // otomatis di-hash oleh cast 'hashed'
+            'bio' => 'Pengelola platform Osis Connect.',
+        ], 'admin');
 
-        User::updateOrCreate(
-            ['email' => 'guru@osisconnect.test'],
-            [
-                'name' => 'Pembina OSIS',
-                'nis' => 'GR001',
-                'role' => 'guru',
-                'password' => 'password',
-                'bio' => 'Pembina kegiatan siswa.',
-                'email_verified_at' => now(),
-            ]
-        );
+        $akun('guru@osisconnect.test', [
+            'name' => 'Pembina OSIS',
+            'nis' => 'GR001',
+            'password' => 'password',
+            'bio' => 'Pembina kegiatan siswa.',
+        ], 'guru');
 
-        $siswaUji = User::updateOrCreate(
-            ['email' => 'siswa@osisconnect.test'],
-            [
-                'name' => 'Siswa Uji',
-                'nis' => 'SW001',
-                'role' => 'siswa',
-                'password' => 'password',
-                'bio' => 'Siswa aktif dan suka berbagi cerita.',
-                'email_verified_at' => now(),
-            ]
-        );
+        $siswaUji = $akun('siswa@osisconnect.test', [
+            'name' => 'Siswa Uji',
+            'nis' => 'SW001',
+            'password' => 'password',
+            'bio' => 'Siswa aktif dan suka berbagi cerita.',
+        ], 'siswa');
 
         if (! $siswaUji->kelas_id) {
             $siswaUji->update(['kelas_id' => \App\Models\Kelas::where('nama', 'like', 'X PPLG%')->first()?->id]);

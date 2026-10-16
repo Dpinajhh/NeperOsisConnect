@@ -49,10 +49,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/masuk', [LoginController::class, 'store'])->name('login.store');
 
     Route::get('/daftar', [RegisterController::class, 'create'])->name('register');
-    Route::post('/daftar', [RegisterController::class, 'store'])->name('register.store');
+    Route::post('/daftar', [RegisterController::class, 'store'])->middleware('throttle:5,60')->name('register.store');
 
     Route::get('/lupa-sandi', [PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::post('/lupa-sandi', [PasswordResetLinkController::class, 'store'])->name('password.email');
+    Route::post('/lupa-sandi', [PasswordResetLinkController::class, 'store'])->middleware('throttle:5,60')->name('password.email');
 
     Route::get('/reset-sandi/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-sandi', [NewPasswordController::class, 'store'])->name('password.store');
@@ -74,18 +74,18 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
     // Program kerja & Event — pendaftaran peserta (perlu login)
-    Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->name('event.daftar');
-    Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->name('event.batal');
+    Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->middleware('throttle:20,1')->name('event.daftar');
+    Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->middleware('throttle:20,1')->name('event.batal');
 
     // Polling — memberi suara (perlu login)
-    Route::post('/polling/{polling}/suara', [PollingController::class, 'vote'])->name('polling.vote');
+    Route::post('/polling/{polling}/suara', [PollingController::class, 'vote'])->middleware('throttle:10,1')->name('polling.vote');
 
-    Route::post('/posts', [PostController::class, 'store'])->name('posts.store');
+    Route::post('/posts', [PostController::class, 'store'])->middleware('throttle:20,60')->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->name('posts.suka');
-    Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->name('posts.komentar');
-    Route::delete('/posts/{post}/komentar/{komentar}', [PostController::class, 'hapusKomentar'])->name('posts.komentar.hapus');
+    Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->middleware('throttle:120,1')->name('posts.suka');
+    Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->middleware('throttle:30,1')->name('posts.komentar');
+    Route::delete('/posts/{post}/komentar/{komentar}', [PostController::class, 'hapusKomentar'])->middleware('throttle:30,1')->name('posts.komentar.hapus');
 
     // Topik / hashtag (Trending Topic)
     Route::get('/topik/{topik:slug}', [TopikController::class, 'show'])->name('topik.show');
@@ -159,5 +159,5 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
 
 // ─── Pelaporan konten (semua pengguna) ──────────────────────
 Route::middleware(['auth', 'aktif'])->group(function (): void {
-    Route::post('/lapor', [\App\Http\Controllers\LaporanController::class, 'store'])->name('lapor.store');
+    Route::post('/lapor', [\App\Http\Controllers\LaporanController::class, 'store'])->middleware('throttle:10,60')->name('lapor.store');
 });

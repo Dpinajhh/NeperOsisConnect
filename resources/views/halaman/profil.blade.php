@@ -53,10 +53,18 @@
                     <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->komentar()->count() }}</span>
                     <span class="text-xs text-slate-500 dark:text-slate-400">Komentar</span>
                 </span>
-                <span class="rounded-xl bg-slate-50 py-3 dark:bg-slate-900">
-                    <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->last_login_at?->diffForHumans() ?? '—' }}</span>
-                    <span class="text-xs text-slate-500 dark:text-slate-400">Login terakhir</span>
-                </span>
+                @if (auth()->id() === $user->id || auth()->user()->isPengelola())
+                    {{-- Waktu login hanya untuk diri sendiri & pengelola, bukan publik --}}
+                    <span class="rounded-xl bg-slate-50 py-3 dark:bg-slate-900">
+                        <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->last_login_at?->diffForHumans() ?? '—' }}</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Login terakhir</span>
+                    </span>
+                @else
+                    <span class="rounded-xl bg-slate-50 py-3 dark:bg-slate-900">
+                        <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->created_at?->translatedFormat('M Y') ?? '—' }}</span>
+                        <span class="text-xs text-slate-500 dark:text-slate-400">Bergabung</span>
+                    </span>
+                @endif
             </p>
         </div>
     </div>

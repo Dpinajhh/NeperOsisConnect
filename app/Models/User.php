@@ -13,19 +13,23 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Kolom yang boleh diisi massal.
+ *
+ * SENGAJA TIDAK DIDAFTARKAN di sini: role, is_active, is_banned, last_login_at.
+ * Keempatnya hanya boleh diubah server lewat forceFill() — supaya tidak ada
+ * jalur di mana input pengguna bisa menaikkan peran atau membuka blokir akunnya
+ * sendiri (mis. bila suatu saat muncul $user->update($request->all())).
+ */
 #[Fillable([
     'name',
     'email',
     'password',
     'nis',
-    'role',
     'kelas_id',
     'avatar',
     'bio',
     'telepon',
-    'is_active',
-    'is_banned',
-    'last_login_at',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

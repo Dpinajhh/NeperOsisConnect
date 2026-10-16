@@ -54,13 +54,17 @@ class RegisterController extends Controller
             'name' => $validated['name'],
             'email' => strtolower($validated['email']),
             'nis' => strtoupper($validated['nis']),
-            'role' => 'siswa',
             'kelas_id' => $validated['kelas_id'],
             'telepon' => $validated['telepon'] ?? null,
             'password' => Hash::make($validated['password']),
-            'email_verified_at' => now(),
-            'is_active' => true,
         ]);
+
+        // Peran, status, & verifikasi email ditetapkan server — bukan dari input pendaftar
+        $user->forceFill([
+            'role' => 'siswa',
+            'is_active' => true,
+            'email_verified_at' => now(),
+        ])->save();
 
         event(new Registered($user));
 

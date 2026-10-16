@@ -69,7 +69,7 @@ class PenggunaController extends Controller
             }
         }
 
-        $user->update(['role' => $validated['role']]);
+        $user->forceFill(['role' => $validated['role']])->save();
 
         return back()->with('sukses', "Peran {$user->name} diubah menjadi {$validated['role']}.");
     }
@@ -83,7 +83,7 @@ class PenggunaController extends Controller
             return back()->with('error', 'Kamu tidak bisa menonaktifkan akunmu sendiri.');
         }
 
-        $user->update(['is_active' => ! $user->is_active]);
+        $user->forceFill(['is_active' => ! $user->is_active])->save();
 
         return back()->with('sukses', $user->is_active
             ? "Akun {$user->name} berhasil diaktifkan."
@@ -99,10 +99,10 @@ class PenggunaController extends Controller
             return back()->with('error', 'Kamu tidak bisa memblokir akunmu sendiri.');
         }
 
-        $user->update([
+        $user->forceFill([
             'is_banned' => ! $user->is_banned,
             'is_active' => $user->is_banned, // saat dilepas blokir, aktifkan kembali
-        ]);
+        ])->save();
 
         return back()->with('sukses', $user->is_banned
             ? "Akun {$user->name} berhasil diblokir."
