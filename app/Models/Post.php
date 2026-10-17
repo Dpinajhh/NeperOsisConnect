@@ -62,21 +62,19 @@ class Post extends Model
      */
     public function scopeTerlihatUntuk(Builder $query, ?User $user): void
     {
-        if (! $user) {
-            return;
-        }
-
         $query->where(function (Builder $q) use ($user) {
+            // Terlihat siapa pun (termasuk tamu): postingan ber-visibilitas sekolah
             $q->where('visibilitas', 'sekolah');
 
-            if ($user->kelas_id) {
-                $q->orWhere(fn (Builder $q2) => $q2->where('visibilitas', 'kelas')
-                    ->whereHas('user', fn (Builder $u) => $u->where('kelas_id', $user->kelas_id)));
+            if (! $user?->kelas_id) {
+                return;
+            }
+            $q->orWhere(fn (Builder $q2) => $q2->where('visibilitas', 'kelas')
+                ->whereHas('user', fn (Builder $u) => $u->where('kelas_id', $user->kelas_id)));
 
-                if ($jurusanId = $user->kelas?->jurusan_id) {
-                    $q->orWhere(fn (Builder $q2) => $q2->where('visibilitas', 'jurusan')
-                        ->whereHas('user.kelas', fn (Builder $k) => $k->where('jurusan_id', $jurusanId)));
-                }
+            if ($jurusanId = $user->kelas?->jurusan_id) {
+                $q->orWhere(fn (Builder $q2) => $q2->where('visibilitas', 'jurusan')
+                    ->whereHas('user.kelas', fn (Builder $k) => $k->where('jurusan_id', $jurusanId)));
             }
         });
     }

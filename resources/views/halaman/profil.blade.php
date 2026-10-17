@@ -46,11 +46,11 @@
             <h2 class="text-sm font-semibold text-slate-700 dark:text-slate-200">Aktivitas</h2>
             <p class="mt-3 grid grid-cols-3 gap-3 text-center">
                 <span class="rounded-xl bg-slate-50 py-3 dark:bg-slate-900">
-                    <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->posts()->count() }}</span>
+                    <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $jumlahPost }}</span>
                     <span class="text-xs text-slate-500 dark:text-slate-400">Post</span>
                 </span>
                 <span class="rounded-xl bg-slate-50 py-3 dark:bg-slate-900">
-                    <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $user->komentar()->count() }}</span>
+                    <span class="block text-lg font-bold text-brand-600 dark:text-brand-400">{{ $jumlahKomentar }}</span>
                     <span class="text-xs text-slate-500 dark:text-slate-400">Komentar</span>
                 </span>
                 @if (auth()->id() === $user->id || auth()->user()->isPengelola())

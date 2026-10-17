@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Komentar;
 use App\Models\User;
 use Illuminate\View\View;
 
@@ -16,7 +17,22 @@ class HalamanController extends Controller
     {
         $user->loadMissing('kelas.jurusan');
 
-        return view('halaman.profil', compact('user'));
+        $penglihat = auth()->user();
+
+        // Pemilik & pengelola melihat seluruh aktivitas; pengunjung lain
+        // hanya menghitung yang boleh dilihat sesuai visibilitas postingan.
+        $lihatSemua = $penglihat && ($penglihat->id === $user->id || $penglihat->isPengelola());
+
+        $jumlahPost = $lihatSemua
+            ? $user->posts()->count()
+            : $user->posts()->terlihatUntuk($penglihat)->count();
+
+        $jumlahKomentar = Komentar::query()
+            ->where('user_id', $user->id)
+            ->when(! $lihatSemua, fn ($q) => $q->whereHas('post', fn ($p) => $p->terlihatUntuk($penglihat)))
+            ->count();
+
+        return view('halaman.profil', compact('user', 'jumlahPost', 'jumlahKomentar'));
     }
 
     /** Beranda panel pengelola (admin & guru) */

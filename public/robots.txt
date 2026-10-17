@@ -1,2 +1,26 @@
+# robots.txt — Osis Connect (platform siswa SMK Negeri 1 Cirebon)
+#
+# Halaman yang boleh diindeks: beranda, OSIS, program kerja, event,
+# polling, pengumuman, dan berita (semuanya terbuka untuk tamu).
+#
+# Area akun & panel pengelola hanya bisa dibuka setelah masuk, jadi
+# sengaja diblokir agar tidak memakan anggaran crawl dan tidak pernah
+# muncul di hasil pencarian.
+
 User-agent: *
-Disallow:
+Allow: /
+
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /feed
+Disallow: /cari
+Disallow: /profil
+Disallow: /notifikasi
+Disallow: /lapor
+
+# Halaman autentikasi
+Disallow: /masuk
+Disallow: /daftar
+Disallow: /lupa-sandi
+Disallow: /reset-sandi
+Disallow: /keluar

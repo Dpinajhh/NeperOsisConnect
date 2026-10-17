@@ -12,11 +12,12 @@
     {{-- PWA: bisa dipasang di HP seperti aplikasi --}}
     <link rel="manifest" href="{{ asset('manifest.json') }}">
     <meta name="theme-color" content="#4f46e5">
-    <link rel="apple-touch-icon" href="{{ asset('icon.svg') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="Osis Connect">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="32x32">
+    <link rel="icon" href="{{ asset('icon.svg') }}" type="image/svg+xml">
 
     <script>
         // Terapkan tema sebelum render agar tidak berkedip
@@ -127,6 +128,8 @@
                     <a href="{{ route('profil-osis') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Profil OSIS</a>
                     <a href="{{ route('program-kerja') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Program Kerja</a>
                     <a href="{{ route('event') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Event</a>
+                    <a href="{{ route('pengumuman.index') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Pengumuman</a>
+                    <a href="{{ route('berita.index') }}" class="hidden text-xs font-semibold text-slate-500 hover:text-brand-600 lg:block dark:text-slate-400">Berita</a>
                     <a href="{{ route('login') }}" class="btn-ghost text-xs sm:text-sm">Masuk</a>
                     <a href="{{ route('register') }}" class="btn-primary text-xs sm:text-sm">Daftar</a>
                 @endauth

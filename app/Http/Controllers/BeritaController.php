@@ -25,7 +25,8 @@ class BeritaController extends Controller
 
     public function show(Berita $berita): View
     {
-        abort_unless($berita->status === 'published', 404);
+        // Draft & berita terjadwal hanya bisa dibuka lewat panel pengelola
+        abort_unless($berita->status === 'published' && $berita->published_at && $berita->published_at->isPast(), 404);
 
         $berita->increment('dilihat');
 

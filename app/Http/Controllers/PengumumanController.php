@@ -13,7 +13,10 @@ use Illuminate\View\View;
 
 class PengumumanController extends Controller
 {
-    /** Daftar pengumuman yang relevan untuk user. */
+    /**
+     * Daftar pengumuman yang relevan untuk pembaca.
+     * Tamu (belum masuk) hanya melihat pengumuman untuk seluruh sekolah.
+     */
     public function index(): View
     {
         $user = auth()->user();
@@ -25,8 +28,8 @@ class PengumumanController extends Controller
             ->latest('published_at')
             ->paginate(10);
 
-        // Tandai yang sudah & belum dibaca
-        $dibaca = $user->pembaca()->pluck('pengumuman.id')->all();
+        // Tandai yang sudah & belum dibaca (tamu tidak punya riwayat baca)
+        $dibaca = $user ? $user->pembaca()->pluck('pengumuman.id')->all() : [];
         $pengumuman->getCollection()->each(function (Pengumuman $p) use ($dibaca) {
             $p->sudah_dibaca = in_array($p->id, $dibaca, true);
         });
@@ -36,18 +39,25 @@ class PengumumanController extends Controller
 
     public function show(Pengumuman $pengumuman): View
     {
-        abort_unless(in_array($pengumuman->target, ['semua'], true)
-            || ($pengumuman->target === 'kelas' && $pengumuman->kelas_id === auth()->user()->kelas_id)
-            || ($pengumuman->target === 'jurusan' && $pengumuman->jurusan_id === auth()->user()->kelas?->jurusan_id),
-            403);
+        $user = auth()->user();
+
+        // Belum terbit / masih dijadwalkan: hanya lewat panel pengelola
+        abort_unless($pengumuman->published_at && $pengumuman->published_at->isPast(), 404);
+
+        abort_unless(
+            $pengumuman->target === 'semua'
+            || ($user && $pengumuman->target === 'kelas' && $pengumuman->kelas_id === $user->kelas_id)
+            || ($user && $pengumuman->target === 'jurusan' && $pengumuman->jurusan_id === $user->kelas?->jurusan_id),
+            403
+        );
 
         $pengumuman->increment('dilihat');
 
-        // Tandai dibaca
-        auth()->user()->pembaca()->syncWithoutDetaching([$pengumuman->id]);
-
-        $user = auth()->user();
-        $user->pembaca()->updateExistingPivot($pengumuman->id, ['dibaca_at' => now()]);
+        // Riwayat baca hanya untuk pengguna yang sudah masuk
+        if ($user) {
+            $user->pembaca()->syncWithoutDetaching([$pengumuman->id]);
+            $user->pembaca()->updateExistingPivot($pengumuman->id, ['dibaca_at' => now()]);
+        }
 
         return view('pengumuman-detail', compact('pengumuman'));
     }

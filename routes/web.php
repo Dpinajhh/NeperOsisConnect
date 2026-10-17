@@ -45,6 +45,14 @@ Route::get('/event/{event}', [EventController::class, 'show'])->name('event.deta
 Route::get('/polling', [PollingController::class, 'index'])->name('polling');
 Route::get('/polling/{polling}', [PollingController::class, 'show'])->name('polling.detail');
 
+// Pengumuman & Berita — terbuka untuk semua; tamu hanya melihat
+// pengumuman bertarget "seluruh sekolah" dan berita yang sudah terbit.
+Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
+Route::get('/pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.detail');
+
+Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
+Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.detail');
+
 // ─── Tamu (belum login) ─────────────────────────
 Route::middleware('guest')->group(function (): void {
     Route::get('/masuk', [LoginController::class, 'create'])->name('login');
@@ -92,12 +100,7 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     // Topik / hashtag (Trending Topic)
     Route::get('/topik/{topik:slug}', [TopikController::class, 'show'])->name('topik.show');
 
-    // Halaman inti — fitur lengkap dibangun bertahap
-    Route::get('/pengumuman', [PengumumanController::class, 'index'])->name('pengumuman.index');
-    Route::get('/pengumuman/{pengumuman}', [PengumumanController::class, 'show'])->name('pengumuman.detail');
-
-    Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
-    Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.detail');
+    // Notifikasi
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
     Route::post('/notifikasi/baca-semua', [NotifikasiController::class, 'bacaSemua'])->middleware('throttle:30,1')->name('notifikasi.baca-semua');
     Route::post('/notifikasi/{notifikasi}/baca', [NotifikasiController::class, 'baca'])->middleware('throttle:60,1')->name('notifikasi.baca');
