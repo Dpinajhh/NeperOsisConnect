@@ -10,9 +10,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\HalamanController;
+use App\Http\Controllers\NotifikasiController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PollingController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\ProfilOsisController;
 use App\Http\Controllers\ProgramKerjaController;
 use App\Http\Controllers\TopikController;
@@ -96,10 +98,14 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
 
     Route::get('/berita', [BeritaController::class, 'index'])->name('berita.index');
     Route::get('/berita/{berita}', [BeritaController::class, 'show'])->name('berita.detail');
-    Route::get('/notifikasi', [HalamanController::class, 'notifikasi'])->name('notifikasi.index');
+    Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
+    Route::post('/notifikasi/baca-semua', [NotifikasiController::class, 'bacaSemua'])->middleware('throttle:30,1')->name('notifikasi.baca-semua');
+    Route::post('/notifikasi/{notifikasi}/baca', [NotifikasiController::class, 'baca'])->middleware('throttle:60,1')->name('notifikasi.baca');
 
     // Profil
-    Route::get('/profil', [HalamanController::class, 'profil'])->name('profil.edit');
+    Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
+    Route::put('/profil', [ProfilController::class, 'update'])->name('profil.update');
+    Route::put('/profil/sandi', [ProfilController::class, 'ubahSandi'])->name('profil.sandi');
     Route::get('/pengguna/{user}', [HalamanController::class, 'profilPublik'])->name('profil.show');
 
     // Panel pengelola — hanya admin & guru
