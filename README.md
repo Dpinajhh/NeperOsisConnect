@@ -30,38 +30,48 @@ serta mengikuti berita kegiatan sekolah — dalam satu ruang digital yang aman d
 | Modul | Keterangan |
 |---|---|
 | **Feed siswa** | Post cerita/kegiatan dengan visibilitas: seluruh sekolah, satu jurusan, atau satu kelas. Bisa suka & komentar (termasuk balasan). |
-| **Pengumuman** | Pengumuman resmi dari pengelola, bertarget sekolah/jurusan/kelas, bisa disematkan (pin), dan ditandai sudah dibaca. |
-| **Berita** | Artikel kegiatan sekolah: draft/publish, headline, kategori, penghitung views. |
-| **Notifikasi** | Notifikasi otomatis saat ada suka, komentar, atau pengumuman baru. |
+| **Pencarian** | Satu kotak untuk mencari postingan, berita, pengumuman, topik, dan siswa. |
+| **Pengumuman** | Pengumuman resmi dari pengelola, bertarget sekolah/jurusan/kelas, bisa disematkan (pin), dan ditandai sudah dibaca. Terbuka untuk tamu (hanya target sekolah). |
+| **Berita** | Artikel kegiatan sekolah: draft/publish, headline, kategori, penghitung views. Terbuka untuk tamu. |
+| **Notifikasi** | Notifikasi otomatis saat ada suka, komentar, atau pengumuman baru; bisa difilter dan ditandai dibaca. |
+| **Profil** | Profil publik (post, komentar, kelas/jurusan) dan halaman **Profil Saya** untuk ubah nama, bio, nomor telepon, avatar, serta ganti kata sandi. |
 | **Moderasi** | Siswa bisa melapor post/komentar; admin & guru menanganinya (open → diproses → selesai/ditolak). |
+| **PWA** | Bisa dipasang di HP seperti aplikasi (manifest, ikon 192/512, maskable, warna tema). |
 | **Multi peran** | `admin`, `guru` (pengelola), dan `siswa`. Menu kelola hanya untuk admin & guru. |
-| **Keamanan** | Middleware `role` (batas peran) & `aktif` (tolak akun nonaktif/diblokir), throttle percobaan login. |
+| **Keamanan** | Middleware `role` & `aktif`, throttle pada aksi sensitif, header keamanan, hardening mass assignment, dan validasi unggahan. |
 
 ## Teknologi
 
-- **Laravel 13** (PHP 8.3+) · SQLite (dev)
+- **Laravel 13** (PHP 8.3+) · SQLite (pengembangan) / MySQL 8 (produksi)
 - **Tailwind CSS v4** via Vite, **Alpine.js** (dark mode berbasis class)
 - Eloquent + migration + seeder + factory lengkap
+- **PHPUnit** — 121 tes, 367 asersi
 
 ## Struktur
 
 ```
 app/
-  Http/Controllers/      Beranda, Dashboard, Halaman, Auth/*
-  Http/Middleware/       RoleMiddleware, EnsureUserIsActive
+  Http/Controllers/      Beranda, Dashboard, Feed, Post, Topik, Cari,
+                         Pengumuman, Berita, Polling, Event, ProgramKerja,
+                         ProfilOsis, Notifikasi, Profil, Halaman, Auth/*, Admin/*
+  Http/Middleware/       RoleMiddleware, EnsureUserIsActive, SecurityHeaders
   Http/Requests/Auth/    LoginRequest (login via email atau NIS)
-  Models/                User, Kelas, Jurusan, Post, Komentar, Kategori,
-                         Pengumuman, Berita, Notifikasi, Laporan
+  Models/                User, Kelas, Jurusan, Post, Komentar, Kategori, Topik,
+                         Pengumuman, Berita, Notifikasi, Laporan, Polling, Event, ...
+config/osis.php          akun admin awal untuk instalasi produksi
 database/
   migrations/            14 tabel: users, kelas, jurusan, posts, post_suka,
-                         komentar, kategori, pengumuman, pengumuman_baca,
-                         berita, laporan, notifikasi, cache, jobs
-  seeders/               Jurusan → Kelas → Kategori → User → Post → Pengumuman → Berita
-resources/views/         layouts (app, auth), auth/*, beranda, dashboard, halaman/*
+                         komentar, kategori, pengumuman, pengumuman_baca, berita,
+                         laporan, notifikasi, cache, jobs (+ topik, polling, event)
+  seeders/               DatabaseSeeder (dev) & ProduksiSeeder (aman untuk produksi)
+resources/views/         layouts (app, auth), auth/*, beranda, dashboard, halaman/*, admin/*
 routes/web.php           publik → guest → auth → admin (prefix /admin)
+tests/Feature/           auth, akses, feed, info, polling, moderasi, cari,
+                         notifikasi, profil, keamanan, seeder
+public/                  manifest.json, favicon.ico, ikon PWA, robots.txt
 ```
 
-## Menjalankan
+## Menjalankan (pengembangan)
 
 ```bash
 composer install
@@ -75,7 +85,7 @@ php artisan serve
 
 Lalu buka http://localhost:8000.
 
-## Akun uji (password: `password`)
+## Akun uji (pengembangan, password: `password`)
 
 | Peran | Email / NIS |
 |---|---|
@@ -83,18 +93,44 @@ Lalu buka http://localhost:8000.
 | Guru / Pembina OSIS | `guru@osisconnect.test` |
 | Siswa | `siswa@osisconnect.test` atau NIS `SW001` |
 
+> Akun di atas **tidak pernah dibuat di produksi** — lihat bagian Deploy.
+
+## Deploy
+
+Panduan lengkap ada di **[DEPLOY.md](DEPLOY.md)**: kebutuhan server, MySQL,
+migrasi + seeding produksi (akun admin diambil dari `.env`, tanpa akun demo),
+`storage:link`, build aset, konfigurasi Nginx/Apache, HTTPS, backup, dan
+checklist pasca-deploy.
+
+Ringkasnya:
+
+```bash
+composer install --no-dev --optimize-autoloader
+cp .env.production.example .env     # isi DB_*, APP_URL, ADMIN_*
+php artisan key:generate
+php artisan migrate --force --seed  # APP_ENV=production -> ProduksiSeeder
+php artisan storage:link
+npm ci && npm run build
+php artisan optimize
+```
+
 ## Status pengembangan
 
-- [x] Fase 0 — Setup Laravel 13 + Tailwind v4
-- [x] Fase 1 — Skema database (14 tabel), model, factory, seeder
-- [x] Fase 2 — Routing lengkap, autentikasi, dashboard, landing page, identitas SMK Negeri 1 Cirebon
-- [x] Fase 3 — Feed siswa langsung: posting (teks/foto/visibilitas), suka, komentar + balasan, hashtag, **Trending Topic**
+Semua fase inti selesai:
+
+- [x] Fase 0 — Setup Laravel 13 + Tailwind v4 + Vite
+- [x] Fase 1 — Skema database, model, factory, seeder
+- [x] Fase 2 — Routing lengkap, autentikasi (email/NIS), dashboard, landing page
+- [x] Fase 3 — Feed siswa (teks/foto/visibilitas, suka, komentar + balasan, hashtag, trending topic)
 - [x] Fase 4 — Profil OSIS (visi, misi, kepengurusan) + kelola admin
 - [x] Fase 5 — Program kerja & Event (agenda, pendaftaran peserta, kelola)
-- [x] Fase 6 — Polling (vote sekali per siswa, hasil persentase, kelola/tutup)
-- [x] Fase 7 — Pengumuman & Berita (terbit, target, pin, tandai sudah baca, kelola)
-- [ ] Fase 8 — Notifikasi, laporan & moderasi
-- [ ] Fase 9 — Profil pengguna (edit, avatar) & dashboard admin
+- [x] Fase 6 — Polling (satu suara per siswa, hasil persentase, kelola/tutup)
+- [x] Fase 7 — Pengumuman & Berita (target, pin, tandai dibaca, headline, draft)
+- [x] Fase 8 — Pencarian global & halaman topik
+- [x] Fase 9 — Notifikasi, laporan & moderasi, kelola pengguna
+- [x] Fase 10 — Profil mandiri, PWA, penguatan keamanan, 121 tes otomatis
+
+Langkah berikutnya: deploy produksi mengikuti [DEPLOY.md](DEPLOY.md).
 
 ---
 

@@ -12,6 +12,14 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Pengaman ganda: akun demo berpassword "password" tidak boleh
+        // pernah masuk ke database produksi.
+        if (app()->environment('production')) {
+            $this->command?->error('UserSeeder hanya untuk pengembangan. Di produksi gunakan ProduksiSeeder (isi ADMIN_EMAIL & ADMIN_PASSWORD di .env).');
+
+            return;
+        }
+
         // Peran, status, & verifikasi email tidak fillable (lihat App\Models\User),
         // jadi ditetapkan eksplisit lewat forceFill.
         $akun = function (string $email, array $data, string $role): User {

@@ -29,11 +29,7 @@
                     </p>
 
                     @auth
-                        @if (auth()->id() !== $user->id)
-                            <p class="mt-4 text-xs text-slate-400 dark:text-slate-500">
-                                Fitur kirim pesan &amp; laporan akan hadir pada fase berikutnya.
-                            </p>
-                        @else
+                        @if (auth()->id() === $user->id)
                             <a href="{{ route('profil.edit') }}" class="btn-ghost mt-4 text-xs">✏️ Edit Profil</a>
                         @endif
                     @endauth
