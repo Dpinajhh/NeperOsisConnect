@@ -59,10 +59,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/masuk', [LoginController::class, 'store'])->name('login.store');
 
     Route::get('/daftar', [RegisterController::class, 'create'])->name('register');
-    Route::post('/daftar', [RegisterController::class, 'store'])->middleware('throttle:5,60')->name('register.store');
+    Route::post('/daftar', [RegisterController::class, 'store'])->middleware('throttle:daftar')->name('register.store');
 
     Route::get('/lupa-sandi', [PasswordResetLinkController::class, 'create'])->name('password.request');
-    Route::post('/lupa-sandi', [PasswordResetLinkController::class, 'store'])->middleware('throttle:5,60')->name('password.email');
+    Route::post('/lupa-sandi', [PasswordResetLinkController::class, 'store'])->middleware('throttle:lupa-sandi')->name('password.email');
 
     Route::get('/reset-sandi/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-sandi', [NewPasswordController::class, 'store'])->name('password.store');
@@ -84,26 +84,26 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
     Route::get('/feed', [FeedController::class, 'index'])->name('feed');
 
     // Program kerja & Event — pendaftaran peserta (perlu login)
-    Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->middleware('throttle:20,1')->name('event.daftar');
-    Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->middleware('throttle:20,1')->name('event.batal');
+    Route::post('/event/{event}/daftar', [EventController::class, 'daftar'])->middleware('throttle:event')->name('event.daftar');
+    Route::delete('/event/{event}/batal', [EventController::class, 'batal'])->middleware('throttle:event')->name('event.batal');
 
     // Polling — memberi suara (perlu login)
-    Route::post('/polling/{polling}/suara', [PollingController::class, 'vote'])->middleware('throttle:10,1')->name('polling.vote');
+    Route::post('/polling/{polling}/suara', [PollingController::class, 'vote'])->middleware('throttle:polling')->name('polling.vote');
 
-    Route::post('/posts', [PostController::class, 'store'])->middleware('throttle:20,60')->name('posts.store');
+    Route::post('/posts', [PostController::class, 'store'])->middleware('throttle:posts')->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
-    Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->middleware('throttle:120,1')->name('posts.suka');
-    Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->middleware('throttle:30,1')->name('posts.komentar');
-    Route::delete('/posts/{post}/komentar/{komentar}', [PostController::class, 'hapusKomentar'])->middleware('throttle:30,1')->name('posts.komentar.hapus');
+    Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->middleware('throttle:suka')->name('posts.suka');
+    Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->middleware('throttle:komentar')->name('posts.komentar');
+    Route::delete('/posts/{post}/komentar/{komentar}', [PostController::class, 'hapusKomentar'])->middleware('throttle:komentar')->name('posts.komentar.hapus');
 
     // Topik / hashtag (Trending Topic)
     Route::get('/topik/{topik:slug}', [TopikController::class, 'show'])->name('topik.show');
 
     // Notifikasi
     Route::get('/notifikasi', [NotifikasiController::class, 'index'])->name('notifikasi.index');
-    Route::post('/notifikasi/baca-semua', [NotifikasiController::class, 'bacaSemua'])->middleware('throttle:30,1')->name('notifikasi.baca-semua');
-    Route::post('/notifikasi/{notifikasi}/baca', [NotifikasiController::class, 'baca'])->middleware('throttle:60,1')->name('notifikasi.baca');
+    Route::post('/notifikasi/baca-semua', [NotifikasiController::class, 'bacaSemua'])->middleware('throttle:notif-semua')->name('notifikasi.baca-semua');
+    Route::post('/notifikasi/{notifikasi}/baca', [NotifikasiController::class, 'baca'])->middleware('throttle:notif-baca')->name('notifikasi.baca');
 
     // Profil
     Route::get('/profil', [ProfilController::class, 'edit'])->name('profil.edit');
@@ -158,15 +158,19 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
         Route::post('/laporan/{laporan}/perbarui', [\App\Http\Controllers\Admin\LaporanController::class, 'perbarui'])->name('laporan.perbarui');
         Route::post('/laporan/{laporan}/hapus-konten', [\App\Http\Controllers\Admin\LaporanController::class, 'hapusKonten'])->name('laporan.hapus-konten');
 
-        // Kelola pengguna (peran, status aktif, blokir)
-        Route::get('/pengguna', [\App\Http\Controllers\Admin\PenggunaController::class, 'index'])->name('pengguna.kelola');
-        Route::post('/pengguna/{user}/peran', [\App\Http\Controllers\Admin\PenggunaController::class, 'ubahPeran'])->name('pengguna.peran');
-        Route::post('/pengguna/{user}/status', [\App\Http\Controllers\Admin\PenggunaController::class, 'statusAkun'])->name('pengguna.status');
-        Route::post('/pengguna/{user}/blokir', [\App\Http\Controllers\Admin\PenggunaController::class, 'blokir'])->name('pengguna.blokir');
+        // Kelola pengguna (peran, status aktif, blokir) - KHUSUS ADMIN.
+        // Guru sengaja tidak diberi akses: mengubah peran berarti bisa
+        // menaikkan akun mana pun menjadi admin (privilege escalation).
+        Route::middleware('role:admin')->group(function (): void {
+            Route::get('/pengguna', [\App\Http\Controllers\Admin\PenggunaController::class, 'index'])->name('pengguna.kelola');
+            Route::post('/pengguna/{user}/peran', [\App\Http\Controllers\Admin\PenggunaController::class, 'ubahPeran'])->name('pengguna.peran');
+            Route::post('/pengguna/{user}/status', [\App\Http\Controllers\Admin\PenggunaController::class, 'statusAkun'])->name('pengguna.status');
+            Route::post('/pengguna/{user}/blokir', [\App\Http\Controllers\Admin\PenggunaController::class, 'blokir'])->name('pengguna.blokir');
+        });
     });
 });
 
 // ─── Pelaporan konten (semua pengguna) ──────────────────────
 Route::middleware(['auth', 'aktif'])->group(function (): void {
-    Route::post('/lapor', [\App\Http\Controllers\LaporanController::class, 'store'])->middleware('throttle:10,60')->name('lapor.store');
+    Route::post('/lapor', [\App\Http\Controllers\LaporanController::class, 'store'])->middleware('throttle:lapor')->name('lapor.store');
 });

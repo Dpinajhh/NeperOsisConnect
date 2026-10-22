@@ -43,6 +43,7 @@
         @endphp
 
         @foreach ($menu as $m)
+            @continue($m['rute'] === 'admin.pengguna.kelola' && auth()->user()->role !== 'admin')
             <a href="{{ route($m['rute']) }}" class="card p-5 transition hover:border-brand-300 hover:shadow-md dark:hover:border-brand-600">
                 <div class="text-2xl">{{ $m['ikon'] }}</div>
                 <h2 class="mt-2 text-sm font-semibold dark:text-white">{{ $m['nama'] }}</h2>

@@ -14,6 +14,7 @@ Di komputer pengembangan aplikasi memakai SQLite; di produksi gunakan MySQL.
 | MySQL / MariaDB | 8.0 / 10.6 |
 | Composer | 2.x |
 | Node.js | 20.x (hanya saat build aset) |
+| Konfigurasi PHP | `expose_php=Off`, `upload_max_filesize` & `post_max_size` minimal 3M |
 
 Aplikasi **tidak memakai queue worker** (notifikasi dibuat langsung saat request)
 dan **tidak punya scheduled task**, jadi cron tidak wajib.
@@ -171,6 +172,12 @@ server {
     location = /favicon.ico { access_log off; log_not_found off; }
     location = /robots.txt  { access_log off; log_not_found off; }
 
+    # Berkas unggahan: tetap nosniff walau tidak lewat Laravel
+    location /storage/ {
+        add_header X-Content-Type-Options nosniff;
+        try_files $uri =404;
+    }
+
     location ~ \.php$ {
         include fastcgi_params;
         fastcgi_pass unix:/run/php/php8.3-fpm.sock;
@@ -270,8 +277,11 @@ php artisan optimize
 
 - `.env` tidak pernah masuk git; jangan mengirimnya lewat chat/email.
 - Akun uji `@osisconnect.test` hanya ada di database pengembangan.
-- Rate limit sudah aktif: login/daftar/lupa sandi 5x per jam, lapor 10x per jam,
-  posting 20x per jam, komentar 30x per menit, suka 120x per menit.
+- Rate limit sudah aktif dan terpisah per aksi: login/daftar/lupa sandi 5x per jam,
+  lapor 10x per jam, posting 20x per jam, komentar 30x per menit,
+  suka 120x per menit. Jatah satu aksi tidak menghabiskan aksi lain.
+- Tautan yang dibuat aplikasi (termasuk reset sandi) memakai `APP_URL`, bukan
+  header `Host` permintaan. Pastikan `APP_URL` sama dengan domain kanonik.
 - Blokir akun (`is_banned`) langsung memutus sesi karena middleware `aktif`
   memanggil `Auth::logout()`.
 - Semua unggahan gambar divalidasi tipe & ukuran (maks 2 MB).

@@ -57,7 +57,7 @@ class AksesTest extends TestCase
         }
     }
 
-    public function test_guru_dapat_membuka_seluruh_panel_pengelola(): void
+    public function test_guru_dapat_membuka_panel_pengelola_kecuali_kelola_pengguna(): void
     {
         $guru = User::factory()->guru()->create();
 
@@ -66,7 +66,6 @@ class AksesTest extends TestCase
             route('admin.pengumuman.kelola'),
             route('admin.berita.kelola'),
             route('admin.laporan.kelola'),
-            route('admin.pengguna.kelola'),
             route('admin.program-kerja.kelola'),
             route('admin.event.kelola'),
             route('admin.polling.kelola'),
@@ -74,6 +73,11 @@ class AksesTest extends TestCase
         ] as $url) {
             $this->actingAs($guru)->get($url)->assertOk();
         }
+
+        // Kelola pengguna (peran/blokir) khusus admin: guru tidak boleh.
+        $this->actingAs($guru)
+            ->get(route('admin.pengguna.kelola'))
+            ->assertForbidden();
     }
 
     public function test_admin_dapat_membuka_seluruh_panel_pengelola(): void

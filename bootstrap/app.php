@@ -20,8 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'aktif' => EnsureUserIsActive::class,
         ]);
 
-        // Header keamanan untuk semua respons web
-        $middleware->web(append: [SecurityHeaders::class]);
+        // Header keamanan untuk semua respons, termasuk error 419/404.
+        // Ditempatkan global agar tetap berjalan saat VerifyCsrfToken
+        // menghentikan permintaan sebelum middleware web lain.
+        $middleware->prepend(SecurityHeaders::class);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

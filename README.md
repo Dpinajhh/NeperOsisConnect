@@ -45,7 +45,7 @@ serta mengikuti berita kegiatan sekolah — dalam satu ruang digital yang aman d
 - **Laravel 13** (PHP 8.3+) · SQLite (pengembangan) / MySQL 8 (produksi)
 - **Tailwind CSS v4** via Vite, **Alpine.js** (dark mode berbasis class)
 - Eloquent + migration + seeder + factory lengkap
-- **PHPUnit** — 121 tes, 367 asersi
+- **PHPUnit** — 136 tes, 543 asersi
 
 ## Struktur
 
@@ -128,7 +128,7 @@ Semua fase inti selesai:
 - [x] Fase 7 — Pengumuman & Berita (target, pin, tandai dibaca, headline, draft)
 - [x] Fase 8 — Pencarian global & halaman topik
 - [x] Fase 9 — Notifikasi, laporan & moderasi, kelola pengguna
-- [x] Fase 10 — Profil mandiri, PWA, penguatan keamanan, 121 tes otomatis
+- [x] Fase 10 — Profil mandiri, PWA, penguatan keamanan, 136 tes otomatis
 
 Langkah berikutnya: deploy produksi mengikuti [DEPLOY.md](DEPLOY.md).
 

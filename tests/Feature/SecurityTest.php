@@ -3,9 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Kelas;
+use App\Models\Komentar;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 /**
@@ -14,6 +17,26 @@ use Tests\TestCase;
 class SecurityTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_tautan_reset_tidak_mengikuti_host_palsu(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->siswa()->create([
+            'email' => 'korban@osisconnect.test',
+        ]);
+
+        $this->post('http://evil.example/lupa-sandi', [
+            'email' => $user->email,
+        ])->assertRedirect();
+
+        Notification::assertSentTo($user, ResetPassword::class, function (ResetPassword $notifikasi) use ($user): bool {
+            $url = $notifikasi->toMail($user)->actionUrl;
+
+            return str_starts_with($url, rtrim((string) config('app.url'), '/'))
+                && ! str_contains($url, 'evil.example');
+        });
+    }
 
     // ─── Mass assignment: kolom istimewa tidak boleh terisi dari input ───
 
@@ -178,6 +201,22 @@ class SecurityTest extends TestCase
         $this->assertSame(20, Post::count());
     }
 
+    public function test_suka_dibatasi_seratus_dua_puluh_per_menit(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $post = Post::factory()->create(['visibilitas' => 'sekolah']);
+
+        for ($i = 0; $i < 120; $i++) {
+            $this->actingAs($siswa)
+                ->post(route('posts.suka', $post))
+                ->assertOk();
+        }
+
+        $this->actingAs($siswa)
+            ->post(route('posts.suka', $post))
+            ->assertStatus(429);
+    }
+
     // ─── Header keamanan ───
 
     public function test_header_keamanan_terpasang_di_respons(): void
@@ -230,5 +269,133 @@ class SecurityTest extends TestCase
             ->get(route('profil.show', $siswa))
             ->assertOk()
             ->assertSee('Login terakhir');
+    }
+
+    // ─── Otorisasi kelola pengguna: hanya admin ───
+
+    public function test_guru_tidak_dapat_mengelola_pengguna_atau_mengubah_peran(): void
+    {
+        $guru = User::factory()->guru()->create();
+        $target = User::factory()->siswa()->create();
+
+        $this->actingAs($guru)
+            ->get(route('admin.pengguna.kelola'))
+            ->assertForbidden();
+
+        $this->actingAs($guru)
+            ->post(route('admin.pengguna.peran', $target), ['role' => 'admin'])
+            ->assertForbidden();
+
+        $this->actingAs($guru)
+            ->post(route('admin.pengguna.blokir', $target))
+            ->assertForbidden();
+
+        $this->assertSame('siswa', $target->fresh()->role);
+        $this->assertFalse($target->fresh()->is_banned);
+    }
+
+    // ─── Visibilitas interaksi ───
+
+    public function test_suka_pada_post_yang_tidak_terlihat_ditolak(): void
+    {
+        $kelasA = Kelas::factory()->create();
+        $kelasB = Kelas::factory()->create();
+        $pemilik = User::factory()->siswa()->create(['kelas_id' => $kelasA->id]);
+        $post = Post::factory()->create([
+            'user_id' => $pemilik->id,
+            'visibilitas' => 'kelas',
+        ]);
+        $pengunjung = User::factory()->siswa()->create(['kelas_id' => $kelasB->id]);
+        $jumlahAwal = $post->jumlah_suka;
+
+        $this->actingAs($pengunjung)
+            ->post(route('posts.suka', $post))
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('post_suka', 0);
+        $this->assertSame($jumlahAwal, $post->fresh()->jumlah_suka);
+    }
+
+    public function test_balasan_harus_berada_pada_post_yang_sama(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $postA = Post::factory()->create(['visibilitas' => 'sekolah']);
+        $postB = Post::factory()->create(['visibilitas' => 'sekolah']);
+        $komentarA = Komentar::factory()->create(['post_id' => $postA->id]);
+
+        $this->actingAs($siswa)
+            ->post(route('posts.komentar', $postB), [
+                'konten' => 'Balasan lintas post',
+                'parent_id' => $komentarA->id,
+            ])
+            ->assertSessionHasErrors('parent_id');
+
+        $this->assertDatabaseMissing('komentar', [
+            'post_id' => $postB->id,
+            'parent_id' => $komentarA->id,
+        ]);
+    }
+
+    public function test_komentar_tidak_dapat_dihapus_lewat_post_lain(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $postA = Post::factory()->create(['visibilitas' => 'sekolah']);
+        $postB = Post::factory()->create(['visibilitas' => 'sekolah']);
+        $komentar = Komentar::factory()->create([
+            'post_id' => $postA->id,
+            'user_id' => $siswa->id,
+        ]);
+        $counterB = $postB->jumlah_komentar;
+
+        $this->actingAs($siswa)
+            ->delete(route('posts.komentar.hapus', [$postB, $komentar]))
+            ->assertNotFound();
+
+        $this->assertNotSoftDeleted('komentar', ['id' => $komentar->id]);
+        $this->assertSame($counterB, $postB->fresh()->jumlah_komentar);
+    }
+
+    // ─── Pembatas laju per aksi ───
+
+    public function test_jatah_pembatas_laju_terpisah_antar_aksi(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $post = Post::factory()->create(['visibilitas' => 'sekolah']);
+
+        // 11 interaksi suka: masih jauh di bawah batas 120/menit
+        for ($i = 0; $i < 11; $i++) {
+            $this->actingAs($siswa)->post(route('posts.suka', $post))->assertOk();
+        }
+
+        // Aksi lain (lapor 10/jam) tidak boleh ikut terkena 429
+        $this->actingAs($siswa)
+            ->post(route('lapor.store'), [
+                'tipe' => 'post',
+                'id' => $post->id,
+                'alasan' => 'Uji pemisahan pembatas laju',
+            ])
+            ->assertRedirect();
+    }
+
+    public function test_siswa_tidak_dapat_melaporkan_post_yang_tidak_terlihat(): void
+    {
+        $kelasA = Kelas::factory()->create();
+        $kelasB = Kelas::factory()->create();
+        $pemilik = User::factory()->siswa()->create(['kelas_id' => $kelasA->id]);
+        $post = Post::factory()->create([
+            'user_id' => $pemilik->id,
+            'visibilitas' => 'kelas',
+        ]);
+        $pelapor = User::factory()->siswa()->create(['kelas_id' => $kelasB->id]);
+
+        $this->actingAs($pelapor)
+            ->post(route('lapor.store'), [
+                'tipe' => 'post',
+                'id' => $post->id,
+                'alasan' => 'Uji laporan post tak terlihat',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseCount('laporan', 0);
     }
 }

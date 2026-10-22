@@ -17,6 +17,11 @@ class SecurityHeaders
 {
     public function handle(Request $request, Closure $next): Response
     {
+        // Sembunyikan versi PHP bila expose_php masih aktif di server.
+        if (function_exists('header_remove')) {
+            header_remove('X-Powered-By');
+        }
+
         $response = $next($request);
 
         $headers = [

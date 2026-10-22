@@ -12,6 +12,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class PostController extends Controller
@@ -95,6 +96,9 @@ class PostController extends Controller
      */
     public function suka(Post $post): JsonResponse
     {
+        // Jangan izinkan interaksi dengan post yang tidak boleh dilihat
+        abort_unless($this->bolehLihat($post), 403);
+
         $user = Auth::user();
         $sudahSuka = $post->disukaiOlehUser($user->id);
 
@@ -131,7 +135,13 @@ class PostController extends Controller
 
         $validated = $request->validate([
             'konten' => ['required', 'string', 'max:500'],
-            'parent_id' => ['nullable', 'exists:komentar,id'],
+            // Balasan harus berada pada post yang sama (cegah balasan lintas post)
+            'parent_id' => [
+                'nullable',
+                Rule::exists('komentar', 'id')
+                    ->where('post_id', $post->id)
+                    ->whereNull('deleted_at'),
+            ],
         ], [
             'konten.required' => 'Komentar tidak boleh kosong.',
         ]);
@@ -177,6 +187,10 @@ class PostController extends Controller
     {
         $user = $request->user();
         abort_unless($user->id === $komentar->user_id || $user->isPengelola(), 403);
+
+        // Komentar harus benar-benar milik post pada URL; kalau tidak,
+        // counter post lain bisa dikurangi lewat ID komentar sendiri.
+        abort_unless((int) $komentar->post_id === (int) $post->id, 404);
 
         // Ikut menghapus balasan lewat cascade DB — counter disesuaikan
         $jumlah = $komentar->balasan()->count() + 1;

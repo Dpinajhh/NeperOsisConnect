@@ -45,6 +45,17 @@ class LaporanController extends Controller
 
         $user = $request->user();
 
+        // Jangan izinkan melaporkan konten yang tidak boleh dilihat.
+        // Tanpa ini, ID post/komentar dari kelas atau jurusan lain bisa
+        // dilaporkan hanya dengan menebak angkanya.
+        $postTerkait = $objek instanceof Post ? $objek : $objek->post;
+        $terlihat = $postTerkait
+            && Post::terlihatUntuk($user)->whereKey($postTerkait->getKey())->exists();
+
+        if (! $terlihat) {
+            return back()->with('error', 'Konten sudah dihapus atau tidak ditemukan.');
+        }
+
         // Tidak boleh melaporkan konten sendiri
         if ($objek->user_id === $user->id) {
             return back()->with('error', 'Kamu tidak bisa melaporkan konten milikmu sendiri.');

@@ -112,6 +112,20 @@ class NotifikasiTest extends TestCase
         $this->assertNotNull($notif->fresh()->dibaca_at);
     }
 
+    public function test_tujuan_protokol_relatif_dan_backslash_tidak_diikuti(): void
+    {
+        $saya = User::factory()->siswa()->create();
+
+        foreach (['//situs-jahat.example/pancing', '/\\situs-jahat.example/pancing'] as $url) {
+            $notif = $this->buatNotifikasi($saya, ['url' => $url]);
+
+            $this->from(route('notifikasi.index'))
+                ->actingAs($saya)
+                ->post(route('notifikasi.baca', $notif))
+                ->assertRedirect(route('notifikasi.index'));
+        }
+    }
+
     public function test_tamu_tidak_dapat_membuka_notifikasi(): void
     {
         $this->get(route('notifikasi.index'))->assertRedirect(route('login'));

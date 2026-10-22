@@ -56,13 +56,33 @@ class NotifikasiController extends Controller
      */
     private function tujuanInternal(?string $url): ?string
     {
-        if (! $url) {
+        if (! $url || str_contains($url, '\\') || preg_match('/[\x00-\x1F]/', $url)) {
             return null;
         }
 
-        $basis = rtrim(url('/'), '/');
+        // Path relatif: satu garis miring, tetapi bukan protokol-relatif ("//").
+        if (str_starts_with($url, '/')) {
+            return str_starts_with($url, '//') ? null : $url;
+        }
 
-        return str_starts_with($url, $basis.'/') || str_starts_with($url, '/')
+        $basis = parse_url(rtrim(url('/'), '/'));
+        $tujuan = parse_url($url);
+
+        if (! is_array($basis) || ! is_array($tujuan)) {
+            return null;
+        }
+
+        // Tolak kredensial di URL (mis. http://host@evil.example).
+        if (isset($tujuan['user']) || isset($tujuan['pass'])) {
+            return null;
+        }
+
+        $skemaBasis = strtolower($basis['scheme'] ?? '');
+        $skemaTujuan = strtolower($tujuan['scheme'] ?? '');
+
+        return $skemaTujuan === $skemaBasis
+            && ($tujuan['host'] ?? null) === ($basis['host'] ?? null)
+            && ($tujuan['port'] ?? null) === ($basis['port'] ?? null)
             ? $url
             : null;
     }
