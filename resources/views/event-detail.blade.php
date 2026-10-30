@@ -8,7 +8,9 @@
             @if ($event->poster_url)
                 <img src="{{ $event->poster_url }}" alt="" class="max-h-72 w-full object-cover">
             @else
-                <div class="flex h-40 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-5xl text-white">📅</div>
+                <div class="flex h-40 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+                    <x-ikon name="calendar-days" class="h-12 w-12" />
+                </div>
             @endif
 
             <div class="p-6">
@@ -57,7 +59,10 @@
                     @auth
                         @if ($sudahDaftar)
                             <div class="flex flex-wrap items-center gap-3">
-                                <span class="badge bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200">✅ Kamu sudah terdaftar</span>
+                                <span class="badge inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-200">
+                                    <x-ikon name="check-circle" class="h-3.5 w-3.5" />
+                                    Kamu sudah terdaftar
+                                </span>
                                 <form method="POST" action="{{ route('event.batal', $event) }}"
                                       onsubmit="return confirm('Batalkan pendaftaran kegiatan ini?')">
                                     @csrf @method('DELETE')

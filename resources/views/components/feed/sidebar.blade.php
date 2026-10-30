@@ -3,7 +3,10 @@
 
 <div class="card p-4">
     <div class="flex items-center justify-between">
-        <h2 class="flex items-center gap-1.5 text-sm font-bold dark:text-white">🔥 Trending Topik</h2>
+        <h2 class="flex items-center gap-1.5 text-sm font-bold dark:text-white">
+            <x-ikon name="fire" class="h-4 w-4 text-rose-500" />
+            Trending Topik
+        </h2>
         <span class="badge bg-slate-100 text-[10px] text-slate-500 dark:bg-slate-700 dark:text-slate-400">7 hari</span>
     </div>
 
@@ -26,7 +29,7 @@
                 <span class="text-[11px] text-slate-400 dark:text-slate-500">{{ $t->jumlah_post }} postingan</span>
             </span>
             @if ($i < 3)
-                <span class="shrink-0 text-xs">🔥</span>
+                <x-ikon name="fire" class="h-3.5 w-3.5 shrink-0 text-rose-500" />
             @endif
         </a>
     @empty
@@ -42,7 +45,10 @@
         Ruang digital siswa <strong>SMK Negeri 1 Cirebon</strong> — berbagi cerita, info pengumuman, dan berita kegiatan sekolah.
     </p>
     <div class="mt-3 flex flex-wrap gap-1.5 text-[11px] text-slate-400 dark:text-slate-500">
-        <span class="badge bg-brand-50 text-brand-600 dark:bg-brand-900 dark:text-brand-300">🎓 Neper</span>
+        <span class="badge inline-flex items-center gap-1 bg-brand-50 text-brand-600 dark:bg-brand-900 dark:text-brand-300">
+            <x-ikon name="academic-cap" class="h-3 w-3" />
+            Neper
+        </span>
         <span class="badge bg-slate-100 dark:bg-slate-700">Berbagi cerita</span>
         <span class="badge bg-slate-100 dark:bg-slate-700">Aman & ter-moderasi</span>
     </div>

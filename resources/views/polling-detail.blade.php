@@ -5,7 +5,10 @@
         </a>
 
         <div class="card p-6">
-            <span class="badge bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-200">🗳️ Polling</span>
+            <span class="badge inline-flex items-center gap-1 bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-200">
+                <x-ikon name="chart-bar" class="h-3.5 w-3.5" />
+                Polling
+            </span>
 
             <h1 class="mt-3 text-xl font-bold text-slate-800 dark:text-slate-100">{{ $polling->pertanyaan }}</h1>
 

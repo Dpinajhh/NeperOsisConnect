@@ -24,7 +24,7 @@
 
     @if ($laporan->isEmpty())
         <div class="card p-12 text-center">
-            <div class="text-5xl">🛡️</div>
+            <x-ikon name="shield-check" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
             <h2 class="mt-4 text-lg font-bold dark:text-white">Tidak ada laporan</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 @if ($filter === 'semua')
@@ -80,14 +80,20 @@
                             </p>
 
                             @if ($objek instanceof \App\Models\Komentar)
-                                <p class="mt-2 text-sm text-slate-800 dark:text-slate-200">💬 {{ $objek->konten }}</p>
+                                <p class="mt-2 flex items-start gap-1.5 text-sm text-slate-800 dark:text-slate-200">
+                                    <x-ikon name="chat-bubble-left" class="mt-0.5 h-4 w-4 shrink-0" />
+                                    <span>{{ $objek->konten }}</span>
+                                </p>
                                 @if ($objek->post)
                                     <a href="{{ route('posts.show', $objek->post) }}" class="mt-2 inline-block text-xs font-medium text-brand-600 hover:underline dark:text-brand-400">
                                         Buka post induk →
                                     </a>
                                 @endif
                             @elseif ($objek instanceof \App\Models\Post)
-                                <p class="mt-2 line-clamp-4 text-sm text-slate-800 dark:text-slate-200">📝 {{ $objek->konten }}</p>
+                                <p class="mt-2 flex items-start gap-1.5 text-sm text-slate-800 dark:text-slate-200">
+                                    <x-ikon name="pencil-square" class="mt-0.5 h-4 w-4 shrink-0" />
+                                    <span class="line-clamp-4">{{ $objek->konten }}</span>
+                                </p>
                                 <a href="{{ route('posts.show', $objek) }}" class="mt-2 inline-block text-xs font-medium text-brand-600 hover:underline dark:text-brand-400">
                                     Buka postingan →
                                 </a>
@@ -99,7 +105,11 @@
 
                     @if ($lap->catatan_admin)
                         <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">
-                            📝 Catatan: <span class="whitespace-pre-line">{{ $lap->catatan_admin }}</span>
+                            <span class="inline-flex items-center gap-1">
+                                <x-ikon name="pencil-square" class="h-3.5 w-3.5" />
+                                Catatan:
+                            </span>
+                            <span class="whitespace-pre-line">{{ $lap->catatan_admin }}</span>
                             @if ($lap->ditanganiOleh) &bull; oleh {{ $lap->ditanganiOleh->name }} @endif
                         </p>
                     @endif
@@ -111,7 +121,10 @@
                                 <form method="POST" action="{{ route('admin.laporan.hapus-konten', $lap) }}"
                                       onsubmit="return confirm('Hapus konten ini secara permanen?')">
                                     @csrf
-                                    <button type="submit" class="btn-danger text-xs">🗑️ Hapus Konten</button>
+                                    <button type="submit" class="btn-danger inline-flex items-center gap-1 text-xs">
+                                        <x-ikon name="trash" class="h-3.5 w-3.5" />
+                                        Hapus Konten
+                                    </button>
                                 </form>
                             @endif
 
@@ -119,14 +132,20 @@
                                 <form method="POST" action="{{ route('admin.laporan.perbarui', $lap) }}">
                                     @csrf
                                     <input type="hidden" name="status" value="diproses">
-                                    <button type="submit" class="btn-ghost text-xs">🔄 Tandai Diproses</button>
+                                    <button type="submit" class="btn-ghost inline-flex items-center gap-1 text-xs">
+                                        <x-ikon name="arrow-path" class="h-3.5 w-3.5" />
+                                        Tandai Diproses
+                                    </button>
                                 </form>
                             @endif
 
                             <form method="POST" action="{{ route('admin.laporan.perbarui', $lap) }}">
                                 @csrf
                                 <input type="hidden" name="status" value="ditolak">
-                                <button type="submit" class="btn-ghost text-xs">✅ Tolak (tidak melanggar)</button>
+                                <button type="submit" class="btn-ghost inline-flex items-center gap-1 text-xs">
+                                    <x-ikon name="check-circle" class="h-3.5 w-3.5" />
+                                    Tolak (tidak melanggar)
+                                </button>
                             </form>
                         </div>
                     @endif

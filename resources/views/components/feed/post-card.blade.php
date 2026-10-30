@@ -30,10 +30,13 @@
                 @endif
                 <span>{{ $post->created_at->diffForHumans() }}</span>
                 <span>&bull;</span>
-                <span>
-                    @if ($post->visibilitas === 'sekolah') 🌐 Seluruh sekolah
-                    @elseif ($post->visibilitas === 'kelas') 👥 Kelas {{ $post->user->kelas?->nama }}
-                    @else 🏫 Jurusan {{ $post->user->kelas?->jurusan?->kode }}
+                <span class="inline-flex items-center gap-1">
+                    @if ($post->visibilitas === 'sekolah')
+                        <x-ikon name="globe-alt" class="h-3 w-3" /> Seluruh sekolah
+                    @elseif ($post->visibilitas === 'kelas')
+                        <x-ikon name="users" class="h-3 w-3" /> Kelas {{ $post->user->kelas?->nama }}
+                    @else
+                        <x-ikon name="building-library" class="h-3 w-3" /> Jurusan {{ $post->user->kelas?->jurusan?->kode }}
                     @endif
                 </span>
             </p>

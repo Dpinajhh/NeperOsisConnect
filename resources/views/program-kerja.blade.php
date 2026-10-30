@@ -1,7 +1,10 @@
 <x-layouts.app :title="'Program Kerja OSIS'">
     {{-- ─── Hero ─────────────────────────────────────────────── --}}
     <section class="mb-5 card overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-700 p-6 text-white sm:p-8">
-        <span class="badge bg-white/15">📋 Program Kerja</span>
+        <span class="badge inline-flex items-center gap-1 bg-white/15">
+            <x-ikon name="clipboard-document-list" class="h-3.5 w-3.5" />
+            Program Kerja
+        </span>
         <h1 class="mt-3 text-2xl font-bold sm:text-3xl">Program Kerja OSIS</h1>
         <p class="mt-2 max-w-2xl text-sm leading-relaxed text-white/80">
             Rencana dan aksi nyata pengurus OSIS SMK Negeri 1 Cirebon untuk satu periode kepengurusan.
@@ -79,7 +82,7 @@
             </article>
         @empty
             <div class="card col-span-full p-10 text-center">
-                <div class="text-4xl">📋</div>
+                <x-ikon name="clipboard-document-list" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
                 <h2 class="mt-3 text-lg font-bold dark:text-white">Belum ada program kerja</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Pengurus OSIS akan menyusunnya segera.</p>
             </div>

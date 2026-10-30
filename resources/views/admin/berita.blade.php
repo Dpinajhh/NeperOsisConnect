@@ -84,7 +84,13 @@
                             <td class="px-4 py-3">
                                 <p class="font-semibold text-slate-700 dark:text-slate-200">{{ $b->judul }}</p>
                                 <p class="text-xs text-slate-400 dark:text-slate-500">{{ $b->kategori?->nama ?? 'Tanpa kategori' }}
-                                    @if ($b->is_headline) &bull; 🔥 headline @endif
+                                    @if ($b->is_headline)
+                                        &bull;
+                                        <span class="inline-flex items-center gap-1">
+                                            <x-ikon name="fire" class="h-3 w-3 text-rose-500" />
+                                            headline
+                                        </span>
+                                    @endif
                                 </p>
                             </td>
                             <td class="px-4 py-3">

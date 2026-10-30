@@ -41,7 +41,7 @@
         {{-- Daftar notifikasi --}}
         @if ($notifikasi->isEmpty())
             <div class="card p-10 text-center">
-                <div class="text-4xl">🔔</div>
+                <x-ikon name="bell" class="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" />
                 <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
                     {{ $filter === 'belum'
                         ? 'Tidak ada notifikasi yang belum dibaca.'
@@ -56,13 +56,16 @@
                         @csrf
                         <button type="submit"
                                 class="flex w-full items-start gap-3 px-4 py-3.5 text-left transition hover:bg-slate-50 dark:hover:bg-slate-700/40 {{ $n->dibaca_at ? '' : 'bg-brand-50/60 dark:bg-brand-950/40' }}">
-                            <span class="mt-0.5 text-xl leading-none">{{ match ($n->tipe) {
-                                'suka' => '❤️',
-                                'komentar' => '💬',
-                                'pengumuman' => '📢',
-                                'berita' => '📰',
-                                default => '🔔',
-                            } }}</span>
+                            @php
+                                $ikonNotifikasi = match ($n->tipe) {
+                                    'suka' => 'heart',
+                                    'komentar' => 'chat-bubble-left',
+                                    'pengumuman' => 'megaphone',
+                                    'berita' => 'newspaper',
+                                    default => 'bell',
+                                };
+                            @endphp
+                            <x-ikon :name="$ikonNotifikasi" class="mt-0.5 h-5 w-5 shrink-0" />
 
                             <span class="min-w-0 flex-1">
                                 <span class="flex items-center gap-2">

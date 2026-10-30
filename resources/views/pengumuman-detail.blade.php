@@ -7,15 +7,21 @@
         <article class="card p-6 sm:p-8">
             <div class="flex flex-wrap items-center gap-2">
                 @if ($pengumuman->is_pinned)
-                    <span class="badge bg-amber-100 text-[10px] font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-200">📌 Disematkan</span>
+                    <span class="badge inline-flex items-center gap-1 bg-amber-100 text-[10px] font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-200">
+                        <x-ikon name="bookmark" class="h-3 w-3" />
+                        Disematkan
+                    </span>
                 @endif
                 @if ($pengumuman->kategori)
                     <span class="badge bg-slate-100 text-[10px] text-slate-500 dark:bg-slate-700 dark:text-slate-400">{{ $pengumuman->kategori->nama }}</span>
                 @endif
-                <span class="badge bg-brand-50 text-[10px] text-brand-600 dark:bg-brand-900 dark:text-brand-300">
-                    @if ($pengumuman->target === 'semua') 🌐 Seluruh sekolah
-                    @elseif ($pengumuman->target === 'kelas') 👥 Kelas {{ $pengumuman->kelas?->nama }}
-                    @else 🏫 Jurusan {{ $pengumuman->jurusan?->kode }}
+                <span class="badge inline-flex items-center gap-1 bg-brand-50 text-[10px] text-brand-600 dark:bg-brand-900 dark:text-brand-300">
+                    @if ($pengumuman->target === 'semua')
+                        <x-ikon name="globe-alt" class="h-3 w-3" /> Seluruh sekolah
+                    @elseif ($pengumuman->target === 'kelas')
+                        <x-ikon name="users" class="h-3 w-3" /> Kelas {{ $pengumuman->kelas?->nama }}
+                    @else
+                        <x-ikon name="building-library" class="h-3 w-3" /> Jurusan {{ $pengumuman->jurusan?->kode }}
                     @endif
                 </span>
             </div>

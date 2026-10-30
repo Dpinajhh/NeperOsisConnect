@@ -125,7 +125,9 @@
         tag.classList.add('flex');
         tag.innerHTML = `
             <span>Membalas <b>${nama}</b></span>
-            <button type="button" class="font-bold hover:text-brand-800" onclick="batalBalas(this)">✕</button>`;
+            <button type="button" class="font-bold hover:text-brand-800" onclick="batalBalas(this)" aria-label="Batal membalas">
+                <svg class="inline h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12"/></svg>
+            </button>`;
 
         kartu.querySelector('input[x-ref="input"]')?.focus();
     }

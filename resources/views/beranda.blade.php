@@ -3,8 +3,9 @@
     <section class="card overflow-hidden">
         <div class="grid gap-8 p-6 sm:p-10 lg:grid-cols-[1.5fr_1fr] lg:items-center">
             <div>
-                <span class="badge bg-brand-50 text-brand-700 dark:bg-brand-900 dark:text-brand-200">
-                    🎓 SMK Negeri 1 Cirebon
+                <span class="badge inline-flex items-center gap-1 bg-brand-50 text-brand-700 dark:bg-brand-900 dark:text-brand-200">
+                    <x-ikon name="academic-cap" class="h-3.5 w-3.5" />
+                    SMK Negeri 1 Cirebon
                 </span>
 
                 <h1 class="mt-4 text-3xl font-bold leading-tight sm:text-4xl dark:text-white">
@@ -15,7 +16,8 @@
                     Ruang digital untuk warga <strong>SMK Negeri 1 Cirebon</strong> — berbagi cerita,
                     pantau pengumuman sekolah, dan baca berita kegiatan OSIS dalam satu tempat.
                     <span class="mt-1 block text-sm italic text-slate-500 dark:text-slate-400">
-                        Sampurasun, Wargi Neper! 👋
+                        Sampurasun, Wargi Neper!
+                        <x-ikon name="hand-raised" class="inline-block h-4 w-4 -translate-y-0.5 text-amber-500" />
                     </span>
                 </p>
 
@@ -53,7 +55,7 @@
 
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="card p-5">
-                <div class="text-2xl">💬</div>
+                <x-ikon name="chat-bubble-left-right" class="h-7 w-7 text-brand-600 dark:text-brand-400" />
                 <h3 class="mt-2 text-sm font-semibold dark:text-white">Feed Siswa</h3>
                 <p class="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     Bagikan cerita, kegiatan kelas, dan pendapat. Bisa untuk seluruh sekolah, satu jurusan, atau satu kelas.
@@ -61,7 +63,7 @@
             </div>
 
             <div class="card p-5">
-                <div class="text-2xl">📢</div>
+                <x-ikon name="megaphone" class="h-7 w-7 text-brand-600 dark:text-brand-400" />
                 <h3 class="mt-2 text-sm font-semibold dark:text-white">Pengumuman</h3>
                 <p class="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     Info resmi dari pengurus OSIS &amp; guru — dari Jadwal ujian sampai pengumpulan tugas.
@@ -69,7 +71,7 @@
             </div>
 
             <div class="card p-5">
-                <div class="text-2xl">📰</div>
+                <x-ikon name="newspaper" class="h-7 w-7 text-brand-600 dark:text-brand-400" />
                 <h3 class="mt-2 text-sm font-semibold dark:text-white">Berita Sekolah</h3>
                 <p class="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     Liputan kegiatan, prestasi, dan opini seputar SMK Negeri 1 Cirebon.
@@ -77,7 +79,7 @@
             </div>
 
             <div class="card p-5">
-                <div class="text-2xl">🛡️</div>
+                <x-ikon name="shield-check" class="h-7 w-7 text-brand-600 dark:text-brand-400" />
                 <h3 class="mt-2 text-sm font-semibold dark:text-white">Aman & Ter-moderasi</h3>
                 <p class="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
                     Bisa melapor konten yang tidak pantas. Tanpa hoaks, tanpa bullying.

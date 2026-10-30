@@ -7,7 +7,8 @@
             <p class="mt-2 text-sm text-white/80">
                 {{ $topik->jumlah_post }} postingan membahas topik ini
                 @if ($peringkat)
-                    &bull; Peringkat <strong>#{{ $peringkat }}</strong> trending saat ini 🔥
+                    &bull; Peringkat <strong>#{{ $peringkat }}</strong> trending saat ini
+                    <x-ikon name="fire" class="inline-block h-4 w-4 -translate-y-0.5 text-amber-400" />
                 @endif
             </p>
         </div>
@@ -18,7 +19,7 @@
             </div>
         @empty
             <div class="card p-10 text-center">
-                <div class="text-4xl">🔍</div>
+                <x-ikon name="magnifying-glass" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
                 <h2 class="mt-3 text-lg font-bold dark:text-white">Belum ada postingan</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                     Belum ada yang membahas #{{ $topik->nama }} yang bisa kamu lihat.

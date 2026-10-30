@@ -30,7 +30,10 @@
 
                     @auth
                         @if (auth()->id() === $user->id)
-                            <a href="{{ route('profil.edit') }}" class="btn-ghost mt-4 text-xs">✏️ Edit Profil</a>
+                            <a href="{{ route('profil.edit') }}" class="btn-ghost mt-4 inline-flex items-center gap-1.5 text-xs">
+                                <x-ikon name="pencil-square" class="h-3.5 w-3.5" />
+                                Edit Profil
+                            </a>
                         @endif
                     @endauth
                 </div>

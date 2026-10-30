@@ -8,7 +8,8 @@
             @if ($trendingTopik->isNotEmpty())
                 <div class="lg:hidden">
                     <p class="mb-2 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-slate-400">
-                        🔥 Trending Topik
+                        <x-ikon name="fire" class="h-3.5 w-3.5 text-rose-500" />
+                        Trending Topik
                     </p>
                     <div class="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
                         @foreach ($trendingTopik as $i => $t)
@@ -30,7 +31,7 @@
                 <x-feed.post-card :post="$post" />
             @empty
                 <div class="card p-10 text-center">
-                    <div class="text-4xl">🌱</div>
+                    <x-ikon name="sparkles" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
                     <h2 class="mt-3 text-lg font-bold dark:text-white">Belum ada postingan</h2>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                         Jadilah yang pertama berbagi cerita di feed siswa!

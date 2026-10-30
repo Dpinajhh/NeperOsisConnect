@@ -11,7 +11,8 @@
         </p>
 
         <div class="mt-5 inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-            🚧 Sedang dikembangkan
+            <x-ikon name="wrench-screwdriver" class="h-3.5 w-3.5" />
+            Sedang dikembangkan
         </div>
 
         <div class="mt-7">

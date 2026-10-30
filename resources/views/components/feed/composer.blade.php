@@ -33,9 +33,9 @@
                     </label>
 
                     <select name="visibilitas" class="rounded-lg border-0 bg-slate-100 py-1.5 pl-2.5 pr-8 text-xs font-semibold text-slate-600 focus:ring-brand-500 dark:bg-slate-700 dark:text-slate-300">
-                        <option value="sekolah">🌐 Seluruh sekolah</option>
-                        <option value="jurusan" @disabled(! auth()->user()->kelas?->jurusan_id)>🏫 Jurusan</option>
-                        <option value="kelas" @disabled(! auth()->user()->kelas_id)>👥 Kelas</option>
+                        <option value="sekolah">Seluruh sekolah</option>
+                        <option value="jurusan" @disabled(! auth()->user()->kelas?->jurusan_id)>Jurusan</option>
+                        <option value="kelas" @disabled(! auth()->user()->kelas_id)>Kelas</option>
                     </select>
 
                     <span class="ml-auto text-[11px] font-medium text-slate-400" x-text="sisa()"></span>
@@ -46,7 +46,7 @@
                 </div>
 
                 <p class="mt-2 text-[11px] text-slate-400 dark:text-slate-500">
-                    Gunakan <span class="font-semibold text-brand-500">#hashtag</span> agar postinganmu masuk hitungan Trending Topik 🔥
+                    Gunakan <span class="font-semibold text-brand-500">#hashtag</span> agar postinganmu masuk hitungan Trending Topik.
                 </p>
             </div>
         </div>

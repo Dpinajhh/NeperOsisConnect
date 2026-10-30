@@ -35,7 +35,7 @@
                 <ul class="mt-2 divide-y divide-slate-100 dark:divide-slate-700">
                     @foreach ($lainnya as $b)
                         <li class="flex items-center gap-3 py-2.5">
-                            <span class="text-lg">📰</span>
+                            <x-ikon name="newspaper" class="h-5 w-5 shrink-0 text-slate-400" />
                             <div class="min-w-0 flex-1">
                                 <a href="{{ route('berita.detail', $b) }}" class="block truncate text-sm font-semibold text-slate-700 hover:text-brand-600 dark:text-slate-200">{{ $b->judul }}</a>
                                 <p class="text-xs text-slate-400 dark:text-slate-500">{{ $b->published_at?->diffForHumans() }}</p>

@@ -116,11 +116,20 @@
                                 </span>
                             </div>
 
-                            <a href="{{ route('profil.edit') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">✏️ Profil Saya</a>
-                            <a href="{{ route('profil.show', auth()->user()) }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">👤 Lihat Profil</a>
+                            <a href="{{ route('profil.edit') }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">
+                                <x-ikon name="pencil-square" class="h-4 w-4 text-slate-400" />
+                                Profil Saya
+                            </a>
+                            <a href="{{ route('profil.show', auth()->user()) }}" class="flex items-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-700">
+                                <x-ikon name="user" class="h-4 w-4 text-slate-400" />
+                                Lihat Profil
+                            </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="w-full px-4 py-2.5 text-left text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950">🚪 Keluar</button>
+                                <button type="submit" class="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-rose-600 hover:bg-rose-50 dark:text-rose-400 dark:hover:bg-rose-950">
+                                    <x-ikon name="arrow-right-on-rectangle" class="h-4 w-4" />
+                                    Keluar
+                                </button>
                             </form>
                         </div>
                     </div>

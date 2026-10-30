@@ -1,7 +1,10 @@
 <x-layouts.app :title="'Profil OSIS'">
     {{-- ─── Hero ─────────────────────────────────────────────── --}}
     <section class="card overflow-hidden bg-gradient-to-br from-brand-600 to-brand-800 p-6 text-white sm:p-10">
-        <span class="badge bg-white/15 text-white/90">🏫 Organisasi Siswa</span>
+        <span class="badge inline-flex items-center gap-1 bg-white/15 text-white/90">
+            <x-ikon name="building-library" class="h-3.5 w-3.5" />
+            Organisasi Siswa
+        </span>
 
         <h1 class="mt-4 text-3xl font-bold sm:text-4xl">OSIS SMK Negeri 1 Cirebon</h1>
         <p class="mt-2 max-w-2xl leading-relaxed text-white/80">
@@ -10,12 +13,24 @@
         </p>
 
         <div class="mt-5 flex flex-wrap gap-2">
-            <span class="badge bg-white/15">🎓 {{ $pengurus->count() }} pengurus</span>
-            <span class="badge bg-white/15">🏷️ {{ $pengurus->pluck('bidang')->unique()->count() }} bidang</span>
-            <span class="badge bg-white/15">📅 Periode {{ $profil->periode }}</span>
+            <span class="badge inline-flex items-center gap-1 bg-white/15">
+                <x-ikon name="academic-cap" class="h-3.5 w-3.5" />
+                {{ $pengurus->count() }} pengurus
+            </span>
+            <span class="badge inline-flex items-center gap-1 bg-white/15">
+                <x-ikon name="tag" class="h-3.5 w-3.5" />
+                {{ $pengurus->pluck('bidang')->unique()->count() }} bidang
+            </span>
+            <span class="badge inline-flex items-center gap-1 bg-white/15">
+                <x-ikon name="calendar-days" class="h-3.5 w-3.5" />
+                Periode {{ $profil->periode }}
+            </span>
             @auth
                 @if (auth()->user()->isPengelola())
-                    <a href="{{ route('admin.profil-osis.edit') }}" class="badge bg-white text-brand-700 hover:bg-white/90">✏️ Kelola profil</a>
+                    <a href="{{ route('admin.profil-osis.edit') }}" class="badge inline-flex items-center gap-1 bg-white text-brand-700 hover:bg-white/90">
+                        <x-ikon name="pencil-square" class="h-3.5 w-3.5" />
+                        Kelola profil
+                    </a>
                 @endif
             @endauth
         </div>
@@ -36,7 +51,7 @@
     <section class="mt-4 grid gap-4 lg:grid-cols-2">
         <div class="card p-6">
             <div class="flex items-center gap-2">
-                <span class="text-xl">🎯</span>
+                <x-ikon name="flag" class="h-5 w-5 text-brand-600 dark:text-brand-400" />
                 <h2 class="text-lg font-bold dark:text-white">Visi</h2>
             </div>
             <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
@@ -46,7 +61,7 @@
 
         <div class="card p-6">
             <div class="flex items-center gap-2">
-                <span class="text-xl">📋</span>
+                <x-ikon name="clipboard-document-list" class="h-5 w-5 text-brand-600 dark:text-brand-400" />
                 <h2 class="text-lg font-bold dark:text-white">Misi</h2>
             </div>
             <p class="mt-3 whitespace-pre-line text-sm leading-relaxed text-slate-600 dark:text-slate-300">
@@ -59,7 +74,7 @@
     @if ($profil->sejarah)
         <section class="mt-4 card p-6">
             <div class="flex items-center gap-2">
-                <span class="text-xl">📜</span>
+                <x-ikon name="document-text" class="h-5 w-5 text-brand-600 dark:text-brand-400" />
                 <h2 class="text-lg font-bold dark:text-white">Sejarah Singkat</h2>
             </div>
             <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ $profil->sejarah }}</p>

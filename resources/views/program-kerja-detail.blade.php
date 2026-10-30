@@ -51,7 +51,9 @@
             @forelse ($program->kegiatan as $event)
                 <a href="{{ route('event.detail', $event) }}"
                    class="mt-3 flex items-center gap-3 rounded-xl border border-slate-100 p-3 transition hover:border-brand-300 dark:border-slate-700 dark:hover:border-brand-600">
-                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-900 dark:text-brand-300">📅</span>
+                    <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-600 dark:bg-brand-900 dark:text-brand-300">
+                        <x-ikon name="calendar-days" class="h-5 w-5" />
+                    </span>
                     <span class="min-w-0 flex-1">
                         <span class="block truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{{ $event->nama }}</span>
                         <span class="text-xs text-slate-500 dark:text-slate-400">

@@ -102,7 +102,13 @@
                                     @elseif ($p->target === 'kelas') Kelas {{ $p->kelas?->nama }}
                                     @else Jurusan {{ $p->jurusan?->kode }}
                                     @endif
-                                    @if ($p->is_pinned) &bull; 📌 sematkan @endif
+                                    @if ($p->is_pinned)
+                                        &bull;
+                                        <span class="inline-flex items-center gap-1">
+                                            <x-ikon name="bookmark" class="h-3 w-3 text-amber-500" />
+                                            sematkan
+                                        </span>
+                                    @endif
                                 </p>
                             </td>
                             <td class="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">

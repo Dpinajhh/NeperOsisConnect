@@ -23,9 +23,9 @@
 
     @if ($q === '')
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            @foreach (['📝' => ['Postingan siswa', 'Kata kunci di isi post', 'feed'], '📰' => ['Berita sekolah', 'Kegiatan & prestasi', 'berita.index'], '📢' => ['Pengumuman', 'Informasi resmi OSIS', 'pengumuman.index'], '🏷️' => ['Topik hashtag', '#trending di sekolah', null], '👥' => ['Siswa & guru', 'Cari nama atau NIS', null]] as $ikon => [$judul, $ket, $rute])
+            @foreach (['pencil-square' => ['Postingan siswa', 'Kata kunci di isi post', 'feed'], 'newspaper' => ['Berita sekolah', 'Kegiatan & prestasi', 'berita.index'], 'megaphone' => ['Pengumuman', 'Informasi resmi OSIS', 'pengumuman.index'], 'tag' => ['Topik hashtag', '#trending di sekolah', null], 'user-group' => ['Siswa & guru', 'Cari nama atau NIS', null]] as $ikon => [$judul, $ket, $rute])
                 <div class="card p-4">
-                    <div class="text-2xl">{{ $ikon }}</div>
+                    <x-ikon :name="$ikon" class="h-7 w-7 text-brand-600 dark:text-brand-400" />
                     <p class="mt-2 font-semibold dark:text-white">{{ $judul }}</p>
                     <p class="text-xs text-slate-500 dark:text-slate-400">{{ $ket }}</p>
                 </div>
@@ -33,7 +33,7 @@
         </div>
     @elseif ($total === 0)
         <div class="card p-12 text-center">
-            <div class="text-5xl">🔍</div>
+            <x-ikon name="magnifying-glass" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
             <h2 class="mt-4 text-lg font-bold dark:text-white">Tidak ada hasil</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 Coba kata kunci lain, misalnya nama kegiatan, kategori berita, atau nama teman.
@@ -66,7 +66,10 @@
             {{-- ─── Postingan ─────────────────────────────── --}}
             <div x-show="tab==='semua' || tab==='post'" x-cloak>
                 @if ($posts->count())
-                    <h2 class="mb-2 mt-5 text-sm font-bold uppercase tracking-wide text-slate-400">📝 Postingan</h2>
+                    <h2 class="mb-2 mt-5 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-400">
+                        <x-ikon name="pencil-square" class="h-4 w-4" />
+                        Postingan
+                    </h2>
                     <div class="space-y-3">
                         @foreach ($posts as $p)
                             <a href="{{ route('posts.show', $p) }}" class="card block p-4 transition hover:shadow-md">
@@ -82,8 +85,14 @@
                                         </div>
                                         <p class="mt-1 line-clamp-3 text-sm text-slate-600 dark:text-slate-300">{{ $p->konten }}</p>
                                         <div class="mt-2 flex gap-4 text-xs text-slate-400">
-                                            <span>❤️ {{ $p->jumlah_suka }} suka</span>
-                                            <span>💬 {{ $p->jumlah_komentar }} komentar</span>
+                                            <span class="inline-flex items-center gap-1">
+                                                <x-ikon name="heart" class="h-3.5 w-3.5" />
+                                                {{ $p->jumlah_suka }} suka
+                                            </span>
+                                            <span class="inline-flex items-center gap-1">
+                                                <x-ikon name="chat-bubble-left" class="h-3.5 w-3.5" />
+                                                {{ $p->jumlah_komentar }} komentar
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -96,7 +105,10 @@
             {{-- ─── Berita ────────────────────────────────── --}}
             <div x-show="tab==='semua' || tab==='berita'" x-cloak>
                 @if ($berita->count())
-                    <h2 class="mb-2 mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">📰 Berita</h2>
+                    <h2 class="mb-2 mt-6 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-400">
+                        <x-ikon name="newspaper" class="h-4 w-4" />
+                        Berita
+                    </h2>
                     <div class="grid gap-3 sm:grid-cols-2">
                         @foreach ($berita as $b)
                             <a href="{{ route('berita.detail', $b) }}" class="card block p-4 transition hover:shadow-md">
@@ -113,13 +125,19 @@
             {{-- ─── Pengumuman ────────────────────────────── --}}
             <div x-show="tab==='semua' || tab==='pengumuman'" x-cloak>
                 @if ($pengumuman->count())
-                    <h2 class="mb-2 mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">📢 Pengumuman</h2>
+                    <h2 class="mb-2 mt-6 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-400">
+                        <x-ikon name="megaphone" class="h-4 w-4" />
+                        Pengumuman
+                    </h2>
                     <div class="space-y-3">
                         @foreach ($pengumuman as $pg)
                             <a href="{{ route('pengumuman.detail', $pg) }}" class="card block p-4 transition hover:shadow-md">
                                 <div class="flex items-center gap-2">
                                     @if ($pg->is_pinned)
-                                        <span class="badge bg-amber-100 text-[10px] text-amber-700 dark:bg-amber-900 dark:text-amber-300">📌 Disematkan</span>
+                                        <span class="badge inline-flex items-center gap-1 bg-amber-100 text-[10px] text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+                                            <x-ikon name="bookmark" class="h-3 w-3" />
+                                            Disematkan
+                                        </span>
                                     @endif
                                     <span class="badge bg-brand-50 text-[10px] text-brand-700 dark:bg-slate-700 dark:text-brand-300">{{ $pg->kategori?->nama ?? 'Pengumuman' }}</span>
                                     <span class="text-xs text-slate-400">• {{ $pg->target }}</span>
@@ -136,7 +154,10 @@
             {{-- ─── Topik ─────────────────────────────────── --}}
             <div x-show="tab==='semua' || tab==='topik'" x-cloak>
                 @if ($topik->count())
-                    <h2 class="mb-2 mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">🏷️ Topik</h2>
+                    <h2 class="mb-2 mt-6 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-400">
+                        <x-ikon name="hashtag" class="h-4 w-4" />
+                        Topik
+                    </h2>
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($topik as $t)
                             <a href="{{ route('topik.show', $t) }}" class="card block p-4 transition hover:shadow-md">
@@ -151,7 +172,10 @@
             {{-- ─── Pengguna ──────────────────────────────── --}}
             <div x-show="tab==='semua' || tab==='orang'" x-cloak>
                 @if ($pengguna->count())
-                    <h2 class="mb-2 mt-6 text-sm font-bold uppercase tracking-wide text-slate-400">👥 Siswa &amp; Guru</h2>
+                    <h2 class="mb-2 mt-6 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-slate-400">
+                        <x-ikon name="user-group" class="h-4 w-4" />
+                        Siswa &amp; Guru
+                    </h2>
                     <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                         @foreach ($pengguna as $u)
                             <a href="{{ route('profil.show', $u) }}" class="card flex items-center gap-3 p-4 transition hover:shadow-md">

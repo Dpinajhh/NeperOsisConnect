@@ -7,15 +7,15 @@
     {{-- Ringkasan --}}
     <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-5">
         @foreach ([
-            ['Semua', $ringkas['semua'], '👥', 'semua'],
-            ['Siswa', $ringkas['siswa'], '🎓', 'siswa'],
-            ['Guru', $ringkas['guru'], '👨‍🏫', 'guru'],
-            ['Admin', $ringkas['admin'], '⭐', 'admin'],
-            ['Diblokir', $ringkas['diblokir'], '🚫', 'diblokir'],
+            ['Semua', $ringkas['semua'], 'user-group', 'semua'],
+            ['Siswa', $ringkas['siswa'], 'academic-cap', 'siswa'],
+            ['Guru', $ringkas['guru'], 'user', 'guru'],
+            ['Admin', $ringkas['admin'], 'star', 'admin'],
+            ['Diblokir', $ringkas['diblokir'], 'no-symbol', 'diblokir'],
         ] as [$label, $n, $ikon, $f])
             <a href="{{ route('admin.pengguna.kelola', $f === 'semua' ? [] : ['filter' => $f]) }}"
                class="card p-4 text-center transition hover:shadow-md {{ $filter === $f ? 'ring-2 ring-brand-500' : '' }}">
-                <div class="text-xl">{{ $ikon }}</div>
+                <x-ikon :name="$ikon" class="mx-auto h-6 w-6 text-brand-500 dark:text-brand-400" />
                 <p class="mt-1 text-2xl font-bold text-brand-600 dark:text-brand-400">{{ $n }}</p>
                 <p class="text-xs text-slate-500 dark:text-slate-400">{{ $label }}</p>
             </a>
@@ -39,7 +39,7 @@
 
     @if ($pengguna->isEmpty())
         <div class="card p-12 text-center">
-            <div class="text-5xl">👤</div>
+            <x-ikon name="user" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
             <h2 class="mt-4 text-lg font-bold dark:text-white">Tidak ada pengguna</h2>
             <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Coba ubah kata kunci atau filter.</p>
         </div>
@@ -92,27 +92,38 @@
                             </td>
                             <td class="px-4 py-3">
                                 @if ($u->is_banned)
-                                    <span class="badge bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300">🚫 Diblokir</span>
+                                    <span class="badge inline-flex items-center gap-1 bg-rose-100 text-rose-700 dark:bg-rose-900 dark:text-rose-300">
+                                        <x-ikon name="no-symbol" class="h-3 w-3" />
+                                        Diblokir
+                                    </span>
                                 @elseif ($u->is_active)
-                                    <span class="badge bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">✅ Aktif</span>
+                                    <span class="badge inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 dark:bg-emerald-900 dark:text-emerald-300">
+                                        <x-ikon name="check-circle" class="h-3 w-3" />
+                                        Aktif
+                                    </span>
                                 @else
-                                    <span class="badge bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">⏸️ Nonaktif</span>
+                                    <span class="badge inline-flex items-center gap-1 bg-amber-100 text-amber-700 dark:bg-amber-900 dark:text-amber-300">
+                                        <x-ikon name="pause-circle" class="h-3 w-3" />
+                                        Nonaktif
+                                    </span>
                                 @endif
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex justify-end gap-1.5">
                                     <form method="POST" action="{{ route('admin.pengguna.status', $u) }}">
                                         @csrf
-                                        <button type="submit" class="rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">
-                                            {{ $u->is_active ? '⏸️ Nonaktifkan' : '▶️ Aktifkan' }}
+                                        <button type="submit" class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-700">
+                                            <x-ikon :name="$u->is_active ? 'pause-circle' : 'play-circle'" class="h-3.5 w-3.5" />
+                                            {{ $u->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
                                     <form method="POST" action="{{ route('admin.pengguna.blokir', $u) }}"
                                           onsubmit="return confirm('{{ $u->is_banned ? 'Lepas blokir' : 'Blokir' }} {{ $u->name }}?')">
                                         @csrf
                                         <button type="submit"
-                                                class="rounded-lg px-2.5 py-1.5 text-xs font-medium transition {{ $u->is_banned ? 'text-emerald-600 hover:bg-emerald-50' : 'text-rose-600 hover:bg-rose-50' }} dark:hover:bg-slate-700">
-                                            {{ $u->is_banned ? '🔓 Lepas Blokir' : '🚫 Blokir' }}
+                                                class="inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-medium transition {{ $u->is_banned ? 'text-emerald-600 hover:bg-emerald-50' : 'text-rose-600 hover:bg-rose-50' }} dark:hover:bg-slate-700">
+                                            <x-ikon :name="$u->is_banned ? 'lock-open' : 'no-symbol'" class="h-3.5 w-3.5" />
+                                            {{ $u->is_banned ? 'Lepas Blokir' : 'Blokir' }}
                                         </button>
                                     </form>
                                 </div>

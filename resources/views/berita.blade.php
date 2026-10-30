@@ -11,7 +11,10 @@
         <a href="{{ route('berita.detail', $headline) }}" class="card mb-4 block overflow-hidden transition hover:shadow-md">
             <div class="grid sm:grid-cols-[1.2fr_1fr]">
                 <div class="p-6">
-                    <span class="badge bg-rose-100 text-[10px] font-bold text-rose-600 dark:bg-rose-900 dark:text-rose-300">🔥 Headline</span>
+                    <span class="badge inline-flex items-center gap-1 bg-rose-100 text-[10px] font-bold text-rose-600 dark:bg-rose-900 dark:text-rose-300">
+                        <x-ikon name="fire" class="h-3 w-3" />
+                        Headline
+                    </span>
                     <h2 class="mt-2 text-xl font-bold leading-snug text-slate-800 dark:text-slate-100">{{ $headline->judul }}</h2>
                     <p class="mt-2 line-clamp-2 text-sm text-slate-600 dark:text-slate-300">{{ $headline->ringkasan }}</p>
                     <p class="mt-3 text-xs text-slate-400 dark:text-slate-500">
@@ -21,7 +24,9 @@
                 @if ($headline->gambar_url)
                     <img src="{{ $headline->gambar_url }}" alt="" class="h-44 w-full object-cover sm:h-full">
                 @else
-                    <div class="flex h-44 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-4xl text-white sm:h-full">📰</div>
+                    <div class="flex h-44 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-white sm:h-full">
+                        <x-ikon name="newspaper" class="h-12 w-12" />
+                    </div>
                 @endif
             </div>
         </a>
@@ -35,7 +40,9 @@
                     @if ($b->gambar_url)
                         <img src="{{ $b->gambar_url }}" alt="" class="h-40 w-full object-cover">
                     @else
-                        <div class="flex h-40 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-4xl text-white">📰</div>
+                        <div class="flex h-40 items-center justify-center bg-gradient-to-br from-brand-500 to-brand-700 text-white">
+                            <x-ikon name="newspaper" class="h-12 w-12" />
+                        </div>
                     @endif
                 </a>
 
@@ -55,7 +62,7 @@
             </article>
         @empty
             <div class="card col-span-full p-10 text-center">
-                <div class="text-4xl">📰</div>
+                <x-ikon name="newspaper" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
                 <h2 class="mt-3 text-lg font-bold dark:text-white">Belum ada berita</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Berita kegiatan akan segera dimuat.</p>
             </div>

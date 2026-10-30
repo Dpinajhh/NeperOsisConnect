@@ -48,7 +48,7 @@ class PostController extends Controller
 
         $this->trending->lupakanCache();
 
-        return back()->with('sukses', 'Postinganmu sudah dibagikan! 🎉');
+        return back()->with('sukses', 'Postinganmu sudah dibagikan!');
     }
 
     /** Halaman satu postingan (untuk "lihat semua komentar" & bagikan). */

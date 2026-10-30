@@ -9,15 +9,21 @@
             <article class="card p-5">
                 <div class="flex flex-wrap items-center gap-2">
                     @if ($p->is_pinned)
-                        <span class="badge bg-amber-100 text-[10px] font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-200">📌 Disematkan</span>
+                        <span class="badge inline-flex items-center gap-1 bg-amber-100 text-[10px] font-bold text-amber-700 dark:bg-amber-900 dark:text-amber-200">
+                            <x-ikon name="bookmark" class="h-3 w-3" />
+                            Disematkan
+                        </span>
                     @endif
                     @if ($p->kategori)
                         <span class="badge bg-slate-100 text-[10px] text-slate-500 dark:bg-slate-700 dark:text-slate-400">{{ $p->kategori->nama }}</span>
                     @endif
-                    <span class="badge bg-brand-50 text-[10px] text-brand-600 dark:bg-brand-900 dark:text-brand-300">
-                        @if ($p->target === 'semua') 🌐 Seluruh sekolah
-                        @elseif ($p->target === 'kelas') 👥 Kelas {{ $p->kelas?->nama }}
-                        @else 🏫 Jurusan {{ $p->jurusan?->kode }}
+                    <span class="badge inline-flex items-center gap-1 bg-brand-50 text-[10px] text-brand-600 dark:bg-brand-900 dark:text-brand-300">
+                        @if ($p->target === 'semua')
+                            <x-ikon name="globe-alt" class="h-3 w-3" /> Seluruh sekolah
+                        @elseif ($p->target === 'kelas')
+                            <x-ikon name="users" class="h-3 w-3" /> Kelas {{ $p->kelas?->nama }}
+                        @else
+                            <x-ikon name="building-library" class="h-3 w-3" /> Jurusan {{ $p->jurusan?->kode }}
                         @endif
                     </span>
                     @unless ($p->sudah_dibaca)
@@ -41,7 +47,7 @@
             </article>
         @empty
             <div class="card p-10 text-center">
-                <div class="text-4xl">📢</div>
+                <x-ikon name="megaphone" class="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600" />
                 <h2 class="mt-3 text-lg font-bold dark:text-white">Belum ada pengumuman</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Pengumuman untukmu akan muncul di sini.</p>
             </div>

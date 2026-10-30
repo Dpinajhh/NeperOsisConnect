@@ -80,6 +80,6 @@ class LaporanController extends Controller
             'status' => 'open',
         ]);
 
-        return back()->with('sukses', 'Laporan terkirim. Pengurus OSIS akan meninjau secepatnya. Terima kasih sudah menjaga kenyamanan bersama! 🙏');
+        return back()->with('sukses', 'Laporan terkirim. Pengurus OSIS akan meninjau secepatnya. Terima kasih sudah menjaga kenyamanan bersama!');
     }
 }
