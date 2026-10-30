@@ -50,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
 
         RateLimiter::for('lapor', fn (Request $request) => Limit::perHour(10)->by($kunci($request, 'lapor')));
         RateLimiter::for('posts', fn (Request $request) => Limit::perHour(20)->by($kunci($request, 'posts')));
+        RateLimiter::for('posts-ubah', fn (Request $request) => Limit::perHour(30)->by($kunci($request, 'posts-ubah')));
         RateLimiter::for('suka', fn (Request $request) => Limit::perMinute(120)->by($kunci($request, 'suka')));
         RateLimiter::for('komentar', fn (Request $request) => Limit::perMinute(30)->by($kunci($request, 'komentar')));
         RateLimiter::for('notif-baca', fn (Request $request) => Limit::perMinute(60)->by($kunci($request, 'notif-baca')));

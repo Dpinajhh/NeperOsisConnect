@@ -92,6 +92,8 @@ Route::middleware(['auth', 'aktif'])->group(function (): void {
 
     Route::post('/posts', [PostController::class, 'store'])->middleware('throttle:posts')->name('posts.store');
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+    Route::get('/posts/{post}/ubah', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/{post}', [PostController::class, 'update'])->middleware('throttle:posts-ubah')->name('posts.update');
     Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('posts.destroy');
     Route::post('/posts/{post}/suka', [PostController::class, 'suka'])->middleware('throttle:suka')->name('posts.suka');
     Route::post('/posts/{post}/komentar', [PostController::class, 'komentar'])->middleware('throttle:komentar')->name('posts.komentar');

@@ -6,6 +6,7 @@ use App\Models\Komentar;
 use App\Models\Notifikasi;
 use App\Models\Post;
 use App\Models\Topik;
+use App\Models\User;
 use App\Services\TrendingTopicService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -17,34 +18,20 @@ use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    public function __construct(private readonly TrendingTopicService $trending)
-    {
-    }
+    public function __construct(private readonly TrendingTopicService $trending) {}
 
     /**
      * Simpan postingan baru: teks, gambar (opsional), & hashtag otomatis.
      */
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'konten' => ['required', 'string', 'max:2000'],
-            'gambar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
-            'visibilitas' => ['required', 'in:sekolah,kelas,jurusan'],
-        ], [
-            'konten.required' => 'Tulis sesuatu dulu sebelum membagikan.',
-            'gambar.image' => 'File harus berupa gambar.',
-            'gambar.max' => 'Ukuran gambar maksimal 2 MB.',
-            'visibilitas.required' => 'Pilih siapa yang boleh melihat postingan.',
-        ]);
+        $validated = $this->validasiPost($request, denganGambar: true);
 
         $user = $request->user();
 
         // Siswa hanya boleh memilih visibilitas sesuai kelas/jurusannya
-        if ($validated['visibilitas'] === 'kelas' && ! $user->kelas_id) {
-            return back()->withErrors(['visibilitas' => 'Kamu belum punya kelas, pilih "Seluruh sekolah".']);
-        }
-        if ($validated['visibilitas'] === 'jurusan' && ! $user->kelas?->jurusan_id) {
-            return back()->withErrors(['visibilitas' => 'Kamu belum punya jurusan, pilih "Seluruh sekolah".']);
+        if ($galat = $this->galatVisibilitas($validated['visibilitas'], $user)) {
+            return back()->withErrors(['visibilitas' => $galat]);
         }
 
         if ($request->hasFile('gambar')) {
@@ -73,6 +60,39 @@ class PostController extends Controller
         $post->sudah_disukai = $post->disukaiOlehUser(auth()->id());
 
         return view('post-detail', compact('post'));
+    }
+
+    /** Form ubah postingan — hanya pemilik postingan. */
+    public function edit(Post $post): View
+    {
+        abort_unless($post->user_id === auth()->id(), 403);
+
+        return view('post-edit', compact('post'));
+    }
+
+    /** Simpan perubahan isi & visibilitas postingan milik sendiri. */
+    public function update(Request $request, Post $post): RedirectResponse
+    {
+        abort_unless($post->user_id === $request->user()->id, 403);
+
+        $validated = $this->validasiPost($request);
+
+        if ($galat = $this->galatVisibilitas($validated['visibilitas'], $request->user())) {
+            return back()->withErrors(['visibilitas' => $galat]);
+        }
+
+        $post->update([
+            'konten' => $validated['konten'],
+            'visibilitas' => $validated['visibilitas'],
+        ]);
+
+        // Hashtag bisa berubah saat diedit: hitung ulang topik terkait.
+        $this->sinkronTopik($post);
+        $this->trending->lupakanCache();
+
+        return redirect()
+            ->route('posts.show', $post)
+            ->with('sukses', 'Postingan berhasil diperbarui.');
     }
 
     public function destroy(Request $request, Post $post): RedirectResponse
@@ -209,6 +229,40 @@ class PostController extends Controller
 
     /** ─── Helper internal ─────────────────────────────── */
 
+    /** Validasi isi postingan (dipakai saat buat & ubah). */
+    private function validasiPost(Request $request, bool $denganGambar = false): array
+    {
+        $aturan = [
+            'konten' => ['required', 'string', 'max:2000'],
+            'visibilitas' => ['required', 'in:sekolah,kelas,jurusan'],
+        ];
+        $pesan = [
+            'konten.required' => 'Tulis sesuatu dulu sebelum membagikan.',
+            'visibilitas.required' => 'Pilih siapa yang boleh melihat postingan.',
+        ];
+
+        if ($denganGambar) {
+            $aturan['gambar'] = ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+            $pesan['gambar.image'] = 'File harus berupa gambar.';
+            $pesan['gambar.max'] = 'Ukuran gambar maksimal 2 MB.';
+        }
+
+        return $request->validate($aturan, $pesan);
+    }
+
+    /** Pesan galat bila visibilitas yang dipilih belum didukung data siswa. */
+    private function galatVisibilitas(string $visibilitas, User $user): ?string
+    {
+        if ($visibilitas === 'kelas' && ! $user->kelas_id) {
+            return 'Kamu belum punya kelas, pilih "Seluruh sekolah".';
+        }
+        if ($visibilitas === 'jurusan' && ! $user->kelas?->jurusan_id) {
+            return 'Kamu belum punya jurusan, pilih "Seluruh sekolah".';
+        }
+
+        return null;
+    }
+
     private function bolehLihat(Post $post): bool
     {
         $user = Auth::user();
@@ -229,23 +283,27 @@ class PostController extends Controller
     /** Tarik hashtag dari konten post, buat/temukan topik, lalu tautkan. */
     private function sinkronTopik(Post $post): void
     {
-        $namaTopik = Post::ekstrakTopik($post->konten);
-
-        if (empty($namaTopik)) {
-            return;
-        }
-
-        $ids = [];
-        foreach ($namaTopik as $nama) {
-            $topik = Topik::firstOrCreate(
+        $ids = collect(Post::ekstrakTopik($post->konten))
+            ->map(fn (string $nama) => Topik::firstOrCreate(
                 ['nama' => $nama],
                 ['slug' => Str::slug($nama)]
-            );
-            $ids[] = $topik->id;
-        }
+            )->id)
+            ->all();
+
+        $lama = $post->topik()->pluck('topik.id');
+        $baru = collect($ids);
 
         $post->topik()->sync($ids);
 
-        Topik::whereIn('id', $ids)->increment('jumlah_post');
+        // Saat diedit, topik yang tetap tidak boleh dihitung ulang.
+        $dihapus = $lama->diff($baru);
+        $ditambah = $baru->diff($lama);
+
+        if ($dihapus->isNotEmpty()) {
+            Topik::whereIn('id', $dihapus)->decrement('jumlah_post');
+        }
+        if ($ditambah->isNotEmpty()) {
+            Topik::whereIn('id', $ditambah)->increment('jumlah_post');
+        }
     }
 }

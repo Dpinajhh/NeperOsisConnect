@@ -29,7 +29,7 @@ serta mengikuti berita kegiatan sekolah — dalam satu ruang digital yang aman d
 
 | Modul | Keterangan |
 |---|---|
-| **Feed siswa** | Post cerita/kegiatan dengan visibilitas: seluruh sekolah, satu jurusan, atau satu kelas. Bisa suka & komentar (termasuk balasan). |
+| **Feed siswa** | Post cerita/kegiatan dengan visibilitas: seluruh sekolah, satu jurusan, atau satu kelas. Bisa suka & komentar (termasuk balasan), serta ubah/hapus postingan sendiri. |
 | **Pencarian** | Satu kotak untuk mencari postingan, berita, pengumuman, topik, dan siswa. |
 | **Pengumuman** | Pengumuman resmi dari pengelola, bertarget sekolah/jurusan/kelas, bisa disematkan (pin), dan ditandai sudah dibaca. Terbuka untuk tamu (hanya target sekolah). |
 | **Berita** | Artikel kegiatan sekolah: draft/publish, headline, kategori, penghitung views. Terbuka untuk tamu. |
@@ -45,7 +45,7 @@ serta mengikuti berita kegiatan sekolah — dalam satu ruang digital yang aman d
 - **Laravel 13** (PHP 8.3+) · SQLite (pengembangan) / MySQL 8 (produksi)
 - **Tailwind CSS v4** via Vite, **Alpine.js** (dark mode berbasis class)
 - Eloquent + migration + seeder + factory lengkap
-- **PHPUnit** — 136 tes, 543 asersi
+- **PHPUnit** - 141 tes, 563 asersi
 
 ## Struktur
 
@@ -128,7 +128,8 @@ Semua fase inti selesai:
 - [x] Fase 7 — Pengumuman & Berita (target, pin, tandai dibaca, headline, draft)
 - [x] Fase 8 — Pencarian global & halaman topik
 - [x] Fase 9 — Notifikasi, laporan & moderasi, kelola pengguna
-- [x] Fase 10 — Profil mandiri, PWA, penguatan keamanan, 136 tes otomatis
+- [x] Fase 10 — Profil mandiri, PWA, penguatan keamanan
+- [x] Fase 11 — Ubah postingan sendiri, hitungan topik tetap akurat, 141 tes otomatis
 
 Langkah berikutnya: deploy produksi mengikuti [DEPLOY.md](DEPLOY.md).
 

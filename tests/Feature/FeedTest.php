@@ -6,6 +6,7 @@ use App\Models\Kelas;
 use App\Models\Komentar;
 use App\Models\Notifikasi;
 use App\Models\Post;
+use App\Models\Topik;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -212,6 +213,114 @@ class FeedTest extends TestCase
             ->assertRedirect();
 
         $this->assertSoftDeleted('posts', ['id' => $post->id]);
+    }
+
+    public function test_pemilik_dapat_mengubah_postingannya(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $post = Post::factory()->create([
+            'user_id' => $siswa->id,
+            'konten' => 'Teks lama yang akan diperbaiki.',
+            'visibilitas' => 'sekolah',
+        ]);
+
+        $this->actingAs($siswa)
+            ->get(route('posts.edit', $post))
+            ->assertOk()
+            ->assertSee('Teks lama yang akan diperbaiki.');
+
+        $this->actingAs($siswa)
+            ->put(route('posts.update', $post), [
+                'konten' => 'Teks baru yang sudah diperbaiki.',
+                'visibilitas' => 'sekolah',
+            ])
+            ->assertRedirect(route('posts.show', $post));
+
+        $this->assertDatabaseHas('posts', [
+            'id' => $post->id,
+            'konten' => 'Teks baru yang sudah diperbaiki.',
+        ]);
+    }
+
+    public function test_siswa_lain_tidak_boleh_mengubah_postingan_orang(): void
+    {
+        $pemilik = User::factory()->siswa()->create();
+        $lain = User::factory()->siswa()->create();
+        $post = Post::factory()->create([
+            'user_id' => $pemilik->id,
+            'konten' => 'Tulisan pemilik.',
+        ]);
+
+        $this->actingAs($lain)->get(route('posts.edit', $post))->assertForbidden();
+        $this->actingAs($lain)
+            ->put(route('posts.update', $post), [
+                'konten' => 'Coba ubah.',
+                'visibilitas' => 'sekolah',
+            ])
+            ->assertForbidden();
+
+        $this->assertSame('Tulisan pemilik.', $post->fresh()->konten);
+    }
+
+    public function test_pengelola_tidak_boleh_mengubah_postingan_siswa(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $admin = User::factory()->admin()->create();
+        $post = Post::factory()->create(['user_id' => $siswa->id]);
+
+        $this->actingAs($admin)->get(route('posts.edit', $post))->assertForbidden();
+        $this->actingAs($admin)
+            ->put(route('posts.update', $post), [
+                'konten' => 'Diubah admin.',
+                'visibilitas' => 'sekolah',
+            ])
+            ->assertForbidden();
+    }
+
+    public function test_ubah_postingan_menyesuaikan_hitungan_topik(): void
+    {
+        $siswa = User::factory()->siswa()->create();
+        $lama = Topik::factory()->create(['nama' => 'lama', 'slug' => 'lama', 'jumlah_post' => 1]);
+        $tetap = Topik::factory()->create(['nama' => 'tetap', 'slug' => 'tetap', 'jumlah_post' => 1]);
+
+        $post = Post::factory()->create([
+            'user_id' => $siswa->id,
+            'konten' => 'Cerita #lama dan #tetap.',
+        ]);
+        $post->topik()->attach([$lama->id, $tetap->id]);
+
+        $this->actingAs($siswa)
+            ->put(route('posts.update', $post), [
+                'konten' => 'Cerita #tetap dan #baru.',
+                'visibilitas' => 'sekolah',
+            ])
+            ->assertRedirect(route('posts.show', $post));
+
+        $this->assertSame(0, $lama->fresh()->jumlah_post);
+        $this->assertSame(1, $tetap->fresh()->jumlah_post);
+        $this->assertSame(1, Topik::where('slug', 'baru')->value('jumlah_post'));
+
+        $this->assertDatabaseMissing('post_topik', ['post_id' => $post->id, 'topik_id' => $lama->id]);
+        $this->assertDatabaseHas('post_topik', ['post_id' => $post->id, 'topik_id' => $tetap->id]);
+    }
+
+    public function test_ubah_visibilitas_kelas_ditolak_bila_siswa_belum_punya_kelas(): void
+    {
+        $siswa = User::factory()->create(['role' => 'siswa', 'kelas_id' => null]);
+        $post = Post::factory()->create([
+            'user_id' => $siswa->id,
+            'konten' => 'Teks asli.',
+        ]);
+
+        $this->actingAs($siswa)
+            ->from(route('posts.edit', $post))
+            ->put(route('posts.update', $post), [
+                'konten' => 'Teks baru.',
+                'visibilitas' => 'kelas',
+            ])
+            ->assertSessionHasErrors('visibilitas');
+
+        $this->assertSame('Teks asli.', $post->fresh()->konten);
     }
 
     public function test_postingan_visibilitas_kelas_hanya_terlihat_sesama_kelas(): void
